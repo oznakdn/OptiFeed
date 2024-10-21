@@ -1,4 +1,6 @@
 ﻿@page "/solver"
+@using System.Collections.ObjectModel
+@using OptiFeed.Core.Result
 
 <MStepper Value="_step">
     <MStepperHeader>
@@ -28,16 +30,68 @@
             <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="()=>_step=2">Next</MButton>
         </MStepperContent>
         <MStepperContent Step="2">
-            <MCard Class="mb-12" Height="200" Color="grey lighten-1">
-
+            <MCard Color="grey lighten-1" Style="margin-bottom:20px;">
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenDataGrid Data="@sourceFeeds" AllowFiltering="true" AllowSorting="true" PageSize="5" AllowPaging="true"
+                                    RowRender="@RowRender" ondragover="event.preventDefault()" @ondrop=@(args => Move(targetFeeds, sourceFeeds))>
+                        <Columns>
+                            @RenderColumns()
+                        </Columns>
+                    </RadzenDataGrid>
+                    <RadzenDataGrid Data="@targetFeeds" AllowFiltering="true" AllowSorting="true" PageSize="5" AllowPaging="true"
+                                    RowRender="@RowRender" ondragover="event.preventDefault()" @ondrop=@(args => Move(sourceFeeds, targetFeeds))>
+                        <Columns>
+                            @RenderColumns()
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenStack>
             </MCard>
-
-            <MButton Color="primary" OnClick="()=>_step=3">Next</MButton>
+            <MButton Color="primary" Disabled=@(targetFeeds.Count == 0 ? true : false) OnClick="()=>Calculate()">Next</MButton>
             <MButton Color="error" OnClick="()=>_step=1">Back</MButton>
         </MStepperContent>
         <MStepperContent Step="3">
-            <MCard Class="mb-12" Height="200" Color="grey lighten-1"></MCard>
-            @*<MButton Color="primary" OnClick="()=>_step=1">Continue</MButton>*@
+            <MCard Color="grey lighten-1" Style="margin-bottom:20px;">
+                @if (result == null)
+                {
+                    <MProgressLinear Color="lime" Indeterminate Reverse></MProgressLinear>
+                }
+                else
+                {
+                    <MSimpleTable Dark>
+                        <thead>
+                            <tr>
+                                <th class="text-left">
+                                    Feed Name
+                                </th>
+                                <th class="text-left">
+                                    Price
+                                </th>
+                                <th class="text-left">
+                                    Amoung (Kg)
+                                </th>
+                                <th class="text-left">
+                                    Percentage (%)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in result.FeedMixes)
+                            {
+                                <tr @key="item.FeedName">
+                                    <td>@item.FeedName</td>
+                                    <td>@item.PricePerKg</td>
+                                    <td>@item.UsageAmountKg</td>
+                                    <td>@item.UsagePercentage</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot style="color:red;">
+                            Total Price:$ @result.TotalCost
+                        </tfoot>
+                    </MSimpleTable>
+                }
+            </MCard>
+            @*<MButton Color="primary" OnClick="()=>Calculate()">Calculate</MButton>*@
             <MButton Color="error" OnClick="()=>_step=2">Back</MButton>
         </MStepperContent>
     </MStepperItems>
@@ -46,5 +100,80 @@
 @code {
 
     private Animal Animal = new();
+    private FeedMixSummary result;
     private int _step = 1;
+
+    ObservableCollection<Feed> sourceFeeds;
+    ObservableCollection<Feed> targetFeeds = new();
+
+    private IEnumerable<Feed> _feeds = new List<Feed>
+{
+          new Feed { Name = "Mısır Silajı", EnergyContent = 2.2, ProteinContent = 80,  CostPerKg = 0.30, MaxUsage = 40, DryMatter = 35 },
+          new Feed { Name = "Yonca Kuru Otu", EnergyContent = 2.5, ProteinContent = 180, CostPerKg = 0.50, MaxUsage = 20, DryMatter = 85 },
+          new Feed { Name = "Buğday Kepeği", EnergyContent = 2.6, ProteinContent = 160, CostPerKg = 0.40, MaxUsage = 15, DryMatter = 89 },
+          new Feed { Name = "Arpa", EnergyContent = 3.0, ProteinContent = 120, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 88 },
+          new Feed { Name = "Pamuk Tohumu", EnergyContent = 3.1, ProteinContent = 210, CostPerKg = 0.60, MaxUsage = 10, DryMatter = 92 },
+          new Feed { Name = "Soya Küspesi", EnergyContent = 3.2, ProteinContent = 440, CostPerKg = 0.70, MaxUsage = 10, DryMatter = 90 },
+          new Feed { Name = "Melas", EnergyContent = 2.4, ProteinContent = 50, CostPerKg = 0.25, MaxUsage = 5, DryMatter = 75 },
+          new Feed { Name = "Buğday", EnergyContent = 3.1, ProteinContent = 130, CostPerKg = 0.45, MaxUsage = 30, DryMatter = 87 },
+          new Feed { Name = "Ayçiçeği Küspesi", EnergyContent = 2.8, ProteinContent = 280, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 88 },
+          new Feed { Name = "Şeker Pancarı Posası", EnergyContent = 2.0, ProteinContent = 90, CostPerKg = 0.30, MaxUsage = 35, DryMatter = 20 },
+          new Feed { Name = "Yulaf", EnergyContent = 2.7, ProteinContent = 140, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 86 },
+          new Feed { Name = "Mısır Tane", EnergyContent = 3.4, ProteinContent = 90, CostPerKg = 0.50, MaxUsage = 30, DryMatter = 88 },
+          new Feed { Name = "Çavdar", EnergyContent = 3.0, ProteinContent = 110, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 85 },
+          new Feed { Name = "Kuru Yonca Peleti", EnergyContent = 2.4, ProteinContent = 180, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 90 },
+          new Feed { Name = "Pamuk Tohumu Küspesi", EnergyContent = 2.9, ProteinContent = 250, CostPerKg = 0.65, MaxUsage = 15, DryMatter = 91 },
+          new Feed { Name = "Bezelye", EnergyContent = 2.7, ProteinContent = 220, CostPerKg = 0.45, MaxUsage = 15, DryMatter = 87 },
+          new Feed { Name = "Yonca Silajı", EnergyContent = 2.1, ProteinContent = 150, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 40 },
+          new Feed { Name = "Mısır Gluteni", EnergyContent = 3.3, ProteinContent = 600, CostPerKg = 0.70, MaxUsage = 8, DryMatter = 89 },
+          new Feed { Name = "Kuru Arpa Posası", EnergyContent = 2.9, ProteinContent = 170, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 92 },
+          new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200, CostPerKg = 0.55, MaxUsage = 12, DryMatter = 90 }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        sourceFeeds = new ObservableCollection<Feed>(_feeds);
+    }
+
+    Feed draggedItem;
+
+    void RowRender(RowRenderEventArgs<Feed> args)
+    {
+        args.Attributes.Add("title", "Drag row to move it to the other DataGrid");
+        args.Attributes.Add("style", "cursor:grab");
+        args.Attributes.Add("draggable", "true");
+        args.Attributes.Add("ondragstart", EventCallback.Factory.Create<DragEventArgs>(this, () => draggedItem = args.Data));
+    }
+
+    void Move(ObservableCollection<Feed> source, ObservableCollection<Feed> target)
+    {
+        if (source.Contains(draggedItem))
+        {
+            source.Remove(draggedItem);
+        }
+        if (!target.Contains(draggedItem))
+        {
+            target.Add(draggedItem);
+        }
+    }
+
+    RenderFragment RenderColumns()
+    {
+        return __builder =>
+        {
+            <text>
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="160px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max Usage" Width="200px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="160px" />
+            </text>
+        };
+    }
+
+    void Calculate()
+    {
+        result = FeedMixer.CalculateOptimalFeedMix(Animal, targetFeeds.ToList());
+        _step = 3;
+    }
 }

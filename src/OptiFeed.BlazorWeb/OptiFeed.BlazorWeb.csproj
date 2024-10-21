@@ -1,16 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Masa.Blazor" Version="1.6.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Masa.Blazor" Version="1.6.0" />
+		<PackageReference Include="Radzen.Blazor" Version="5.3.3" />
+		<PackageReference Include="Google.OrTools" Version="9.11.4210" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OptiFeed.Core\OptiFeed.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OptiFeed.Core\OptiFeed.Core.csproj" />
+	</ItemGroup>
 </Project>

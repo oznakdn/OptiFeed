@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -11,6 +12,8 @@ builder.Services.AddMasaBlazor(options =>
         theme.Dark = true;
     });
 });
+
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 
