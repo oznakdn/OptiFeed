@@ -1,0 +1,50 @@
+﻿@page "/solver"
+
+<MStepper Value="_step">
+    <MStepperHeader>
+        <MStepperStep Step="1" Complete="_step>1">
+            Enter Information
+        </MStepperStep>
+        <MDivider></MDivider>
+        <MStepperStep Step="2" Complete="_step>2">
+            Select Feeds
+        </MStepperStep>
+        <MDivider></MDivider>
+        <MStepperStep Step="3">
+            Result
+        </MStepperStep>
+    </MStepperHeader>
+
+    <MStepperItems>
+        <MStepperContent Step="1">
+            <MForm Model="Animal"
+                   AutoLabel
+                   Class="mx-auto"
+                   Style="width: 400px">
+                <MTextField Label="Age" @bind-Value="Animal.Age" Type="number" Filled></MTextField>
+                <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
+                <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
+            </MForm>
+            <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="()=>_step=2">Next</MButton>
+        </MStepperContent>
+        <MStepperContent Step="2">
+            <MCard Class="mb-12" Height="200" Color="grey lighten-1">
+
+            </MCard>
+
+            <MButton Color="primary" OnClick="()=>_step=3">Next</MButton>
+            <MButton Color="error" OnClick="()=>_step=1">Back</MButton>
+        </MStepperContent>
+        <MStepperContent Step="3">
+            <MCard Class="mb-12" Height="200" Color="grey lighten-1"></MCard>
+            @*<MButton Color="primary" OnClick="()=>_step=1">Continue</MButton>*@
+            <MButton Color="error" OnClick="()=>_step=2">Back</MButton>
+        </MStepperContent>
+    </MStepperItems>
+</MStepper>
+
+@code {
+
+    private Animal Animal = new();
+    private int _step = 1;
+}

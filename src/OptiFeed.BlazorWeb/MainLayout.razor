@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 <MApp>
-<!--SideBar-->
+    <!--SideBar-->
     <MNavigationDrawer Absolute ExpandOnHover>
         <MList>
             <MListItem Link>
@@ -31,7 +31,17 @@
                 </MListItemIcon>
                 <MListItemTitle>Stocks</MListItemTitle>
             </MListItem>
+            <MDivider></MDivider>
+
+            <MListItem Link Href="/solver">
+                <MListItemIcon>
+                    <MIcon>mdi-math-integral-box</MIcon>
+                </MListItemIcon>
+                <MListItemTitle>Solver</MListItemTitle>
+            </MListItem>
+
         </MList>
+
     </MNavigationDrawer>
     <!--TopBar-->
     <MAppBar App>
