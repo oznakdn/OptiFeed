@@ -9,4 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Masa.Blazor" Version="1.6.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OptiFeed.Core\OptiFeed.Core.csproj" />
+  </ItemGroup>
 </Project>
