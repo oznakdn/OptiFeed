@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+
+<MApp>
+<!--SideBar-->
+    <MNavigationDrawer Absolute ExpandOnHover>
+        <MList>
+            <MListItem Link>
+                <MListItemContent>
+                    <MListItemTitle Class="text-h6">
+                        OptiFeed
+                    </MListItemTitle>
+                </MListItemContent>
+            </MListItem>
+        </MList>
+        <MList Nav Dense>
+            <MListItem Link Href="/">
+                <MListItemIcon>
+                    <MIcon>mdi-cow</MIcon>
+                </MListItemIcon>
+                <MListItemTitle>Animals</MListItemTitle>
+            </MListItem>
+            <MListItem Link>
+                <MListItemIcon>
+                    <MIcon>mdi-sprout</MIcon>
+                </MListItemIcon>
+                <MListItemTitle>Feeds</MListItemTitle>
+            </MListItem>
+            <MListItem Link Href="/">
+                <MListItemIcon>
+                    <MIcon>mdi-silo</MIcon>
+                </MListItemIcon>
+                <MListItemTitle>Stocks</MListItemTitle>
+            </MListItem>
+        </MList>
+    </MNavigationDrawer>
+    <!--TopBar-->
+    <MAppBar App>
+        <MIcon Large Color="success">mdi-sprout-outline</MIcon>
+        <MAppBarTitle Style="font-size:32px;">OptiFeed</MAppBarTitle>
+        <MSpacer></MSpacer>
+        <MButton Icon>
+            <MIcon>mdi-github</MIcon>
+        </MButton>
+        <MButton Icon>
+            <MIcon>mdi-heart</MIcon>
+        </MButton>
+    </MAppBar>
+    <!--Content-->
+    <MMain>
+        <MContainer>
+            @Body
+        </MContainer>
+    </MMain>
+    <!--Footer-->
+    <MFooter Absolute>
+        <MCol Class="text-center" Cols="12">
+            @DateTime.Now.Year - <strong>OptiFeed</strong>
+        </MCol>
+    </MFooter>
+</MApp>
+
+
