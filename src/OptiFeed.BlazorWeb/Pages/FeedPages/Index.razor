@@ -139,6 +139,8 @@
           new (){ Text= "Dry Matter (%)", Value= nameof(Feed.DryMatter),Sortable = true},
           new (){ Text= "Energy (Mcal/kg)", Value= nameof(Feed.EnergyContent),Sortable = true},
           new (){ Text= "Protein (g/kg)", Value= nameof(Feed.ProteinContent),Sortable = true},
+          new (){ Text= "ADF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
+          new (){ Text= "NDF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
           new (){ Text= "Cost ($/kg)", Value= nameof(Feed.CostPerKg),Sortable = true},
           new (){ Text= "Max Usage (kg)", Value= nameof(Feed.MaxUsage),Sortable = true},
           new (){ Text= "Actions", Value= "actions",Sortable=false }
@@ -155,7 +157,9 @@
         ProteinContent = 0,
         EnergyContent = 0,
         CostPerKg = 0,
-        MaxUsage = 0
+        MaxUsage = 0,
+        ADFContent = 0,
+        NDFContent = 0
     };
     private int _editedIndex = -1;
 
@@ -176,26 +180,26 @@
     {
         _feeds = new List<Feed>
 {
-            new Feed { Name = "Mısır Silajı", EnergyContent = 2.2, ProteinContent = 80,  CostPerKg = 0.30, MaxUsage = 40, DryMatter = 35 },
-            new Feed { Name = "Yonca Kuru Otu", EnergyContent = 2.5, ProteinContent = 180, CostPerKg = 0.50, MaxUsage = 20, DryMatter = 85 },
-            new Feed { Name = "Buğday Kepeği", EnergyContent = 2.6, ProteinContent = 160, CostPerKg = 0.40, MaxUsage = 15, DryMatter = 89 },
-            new Feed { Name = "Arpa", EnergyContent = 3.0, ProteinContent = 120, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 88 },
-            new Feed { Name = "Pamuk Tohumu", EnergyContent = 3.1, ProteinContent = 210, CostPerKg = 0.60, MaxUsage = 10, DryMatter = 92 },
-            new Feed { Name = "Soya Küspesi", EnergyContent = 3.2, ProteinContent = 440, CostPerKg = 0.70, MaxUsage = 10, DryMatter = 90 },
-            new Feed { Name = "Melas", EnergyContent = 2.4, ProteinContent = 50, CostPerKg = 0.25, MaxUsage = 5, DryMatter = 75 },
-            new Feed { Name = "Buğday", EnergyContent = 3.1, ProteinContent = 130, CostPerKg = 0.45, MaxUsage = 30, DryMatter = 87 },
-            new Feed { Name = "Ayçiçeği Küspesi", EnergyContent = 2.8, ProteinContent = 280, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 88 },
-            new Feed { Name = "Şeker Pancarı Posası", EnergyContent = 2.0, ProteinContent = 90, CostPerKg = 0.30, MaxUsage = 35, DryMatter = 20 },
-            new Feed { Name = "Yulaf", EnergyContent = 2.7, ProteinContent = 140, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 86 },
-            new Feed { Name = "Mısır Tane", EnergyContent = 3.4, ProteinContent = 90, CostPerKg = 0.50, MaxUsage = 30, DryMatter = 88 },
-            new Feed { Name = "Çavdar", EnergyContent = 3.0, ProteinContent = 110, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 85 },
-            new Feed { Name = "Kuru Yonca Peleti", EnergyContent = 2.4, ProteinContent = 180, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 90 },
-            new Feed { Name = "Pamuk Tohumu Küspesi", EnergyContent = 2.9, ProteinContent = 250, CostPerKg = 0.65, MaxUsage = 15, DryMatter = 91 },
-            new Feed { Name = "Bezelye", EnergyContent = 2.7, ProteinContent = 220, CostPerKg = 0.45, MaxUsage = 15, DryMatter = 87 },
-            new Feed { Name = "Yonca Silajı", EnergyContent = 2.1, ProteinContent = 150, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 40 },
-            new Feed { Name = "Mısır Gluteni", EnergyContent = 3.3, ProteinContent = 600, CostPerKg = 0.70, MaxUsage = 8, DryMatter = 89 },
-            new Feed { Name = "Kuru Arpa Posası", EnergyContent = 2.9, ProteinContent = 170, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 92 },
-            new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200, CostPerKg = 0.55, MaxUsage = 12, DryMatter = 90 }
+            new Feed { Name = "Mısır Silajı", EnergyContent = 2.2, ProteinContent = 80,NDFContent = 40.0, ADFContent = 30.0,  CostPerKg = 0.30, MaxUsage = 40, DryMatter = 35, MinUsage = 5 },
+            new Feed { Name = "Yonca Kuru Otu", EnergyContent = 2.5, ProteinContent = 180,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.50, MaxUsage = 20, DryMatter = 85,MinUsage = 5 },
+            new Feed { Name = "Buğday Kepeği", EnergyContent = 2.6, ProteinContent = 160,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 15, DryMatter = 89,MinUsage = 5 },
+            new Feed { Name = "Arpa", EnergyContent = 3.0, ProteinContent = 120,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 88,MinUsage = 5 },
+            new Feed { Name = "Pamuk Tohumu", EnergyContent = 3.1, ProteinContent = 210,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.60, MaxUsage = 10, DryMatter = 92,MinUsage = 5 },
+            new Feed { Name = "Soya Küspesi", EnergyContent = 3.2, ProteinContent = 440,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.70, MaxUsage = 10, DryMatter = 90,MinUsage = 5 },
+            new Feed { Name = "Melas", EnergyContent = 2.4, ProteinContent = 50,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.25, MaxUsage = 5, DryMatter = 75,MinUsage = 5 },
+            new Feed { Name = "Buğday", EnergyContent = 3.1, ProteinContent = 130,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.45, MaxUsage = 30, DryMatter = 87,MinUsage = 5 },
+            new Feed { Name = "Ayçiçeği Küspesi", EnergyContent = 2.8, ProteinContent = 280,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 88,MinUsage = 5 },
+            new Feed { Name = "Şeker Pancarı Posası", EnergyContent = 2.0, ProteinContent = 90,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.30, MaxUsage = 35, DryMatter = 20,MinUsage = 5 },
+            new Feed { Name = "Yulaf", EnergyContent = 2.7, ProteinContent = 140,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 86,MinUsage = 5 },
+            new Feed { Name = "Mısır Tane", EnergyContent = 3.4, ProteinContent = 90,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.50, MaxUsage = 30, DryMatter = 88,MinUsage = 5 },
+            new Feed { Name = "Çavdar", EnergyContent = 3.0, ProteinContent = 110,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 85,MinUsage = 5 },
+            new Feed { Name = "Kuru Yonca Peleti", EnergyContent = 2.4, ProteinContent = 180,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 90,MinUsage = 5 },
+            new Feed { Name = "Pamuk Tohumu Küspesi", EnergyContent = 2.9, ProteinContent = 250,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.65, MaxUsage = 15, DryMatter = 91,MinUsage = 5 },
+            new Feed { Name = "Bezelye", EnergyContent = 2.7, ProteinContent = 220,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.45, MaxUsage = 15, DryMatter = 87,MinUsage = 5 },
+            new Feed { Name = "Yonca Silajı", EnergyContent = 2.1, ProteinContent = 150,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 40,MinUsage = 5 },
+            new Feed { Name = "Mısır Gluteni", EnergyContent = 3.3, ProteinContent = 600,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.70, MaxUsage = 8, DryMatter = 89,MinUsage = 5 },
+            new Feed { Name = "Kuru Arpa Posası", EnergyContent = 2.9, ProteinContent = 170,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 92,MinUsage = 5 },
+            new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 12, DryMatter = 90,MinUsage = 5 }
         };
     }
 
@@ -212,11 +216,14 @@
         {
             var item = _feeds[_editedIndex];
             item.MaxUsage = _editedItem.MaxUsage;
+            item.MinUsage = _editedItem.MinUsage;
             item.DryMatter = _editedItem.DryMatter;
             item.EnergyContent = _editedItem.EnergyContent;
             item.ProteinContent = _editedItem.ProteinContent;
             item.CostPerKg = _editedItem.CostPerKg;
             item.Name = _editedItem.Name;
+            item.ADFContent = _editedItem.ADFContent;
+            item.NDFContent = _editedItem.NDFContent;
 
         }
         else
@@ -236,7 +243,10 @@
             ProteinContent = item.ProteinContent,
             Name = item.Name,
             CostPerKg = item.CostPerKg,
-            MaxUsage = item.MaxUsage
+            MaxUsage = item.MaxUsage,
+            MinUsage = item.MinUsage,
+            ADFContent = item.ADFContent,
+            NDFContent = item.NDFContent
         };
         _dialog = true;
     }
@@ -251,7 +261,10 @@
             ProteinContent = item.ProteinContent,
             Name = item.Name,
             CostPerKg = item.CostPerKg,
-            MaxUsage = item.MaxUsage
+            MaxUsage = item.MaxUsage,
+            MinUsage = item.MinUsage,
+            ADFContent = item.ADFContent,
+            NDFContent = item.NDFContent
         };
         _dialogDelete = true;
     }

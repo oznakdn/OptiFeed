@@ -26,6 +26,8 @@
                 <MTextField Label="Age" @bind-Value="Animal.Age" Type="number" Filled></MTextField>
                 <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
                 <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
+                <MTextField Label="Milk fat" @bind-Value="Animal.MilkFat" Type="number" Filled></MTextField>
+                <MTextField Label="Milk Protein" @bind-Value="Animal.MilkProtein" Type="number" Filled></MTextField>
             </MForm>
             <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="()=>_step=2">Next</MButton>
         </MStepperContent>
@@ -80,8 +82,8 @@
                                 <tr @key="item.FeedName">
                                     <td>@item.FeedName</td>
                                     <td>@item.PricePerKg</td>
-                                    <td>@item.UsageAmountKg</td>
-                                    <td>@item.UsagePercentage</td>
+                                    <td>@(item.UsageAmountKg.ToString("#.##"))</td>
+                                    <td>@(item.UsagePercentage.ToString("#.##"))</td>
                                 </tr>
                             }
                         </tbody>
@@ -108,26 +110,26 @@
 
     private IEnumerable<Feed> _feeds = new List<Feed>
 {
-          new Feed { Name = "Mısır Silajı", EnergyContent = 2.2, ProteinContent = 80,  CostPerKg = 0.30, MaxUsage = 40, DryMatter = 35 },
-          new Feed { Name = "Yonca Kuru Otu", EnergyContent = 2.5, ProteinContent = 180, CostPerKg = 0.50, MaxUsage = 20, DryMatter = 85 },
-          new Feed { Name = "Buğday Kepeği", EnergyContent = 2.6, ProteinContent = 160, CostPerKg = 0.40, MaxUsage = 15, DryMatter = 89 },
-          new Feed { Name = "Arpa", EnergyContent = 3.0, ProteinContent = 120, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 88 },
-          new Feed { Name = "Pamuk Tohumu", EnergyContent = 3.1, ProteinContent = 210, CostPerKg = 0.60, MaxUsage = 10, DryMatter = 92 },
-          new Feed { Name = "Soya Küspesi", EnergyContent = 3.2, ProteinContent = 440, CostPerKg = 0.70, MaxUsage = 10, DryMatter = 90 },
-          new Feed { Name = "Melas", EnergyContent = 2.4, ProteinContent = 50, CostPerKg = 0.25, MaxUsage = 5, DryMatter = 75 },
-          new Feed { Name = "Buğday", EnergyContent = 3.1, ProteinContent = 130, CostPerKg = 0.45, MaxUsage = 30, DryMatter = 87 },
-          new Feed { Name = "Ayçiçeği Küspesi", EnergyContent = 2.8, ProteinContent = 280, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 88 },
-          new Feed { Name = "Şeker Pancarı Posası", EnergyContent = 2.0, ProteinContent = 90, CostPerKg = 0.30, MaxUsage = 35, DryMatter = 20 },
-          new Feed { Name = "Yulaf", EnergyContent = 2.7, ProteinContent = 140, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 86 },
-          new Feed { Name = "Mısır Tane", EnergyContent = 3.4, ProteinContent = 90, CostPerKg = 0.50, MaxUsage = 30, DryMatter = 88 },
-          new Feed { Name = "Çavdar", EnergyContent = 3.0, ProteinContent = 110, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 85 },
-          new Feed { Name = "Kuru Yonca Peleti", EnergyContent = 2.4, ProteinContent = 180, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 90 },
-          new Feed { Name = "Pamuk Tohumu Küspesi", EnergyContent = 2.9, ProteinContent = 250, CostPerKg = 0.65, MaxUsage = 15, DryMatter = 91 },
-          new Feed { Name = "Bezelye", EnergyContent = 2.7, ProteinContent = 220, CostPerKg = 0.45, MaxUsage = 15, DryMatter = 87 },
-          new Feed { Name = "Yonca Silajı", EnergyContent = 2.1, ProteinContent = 150, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 40 },
-          new Feed { Name = "Mısır Gluteni", EnergyContent = 3.3, ProteinContent = 600, CostPerKg = 0.70, MaxUsage = 8, DryMatter = 89 },
-          new Feed { Name = "Kuru Arpa Posası", EnergyContent = 2.9, ProteinContent = 170, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 92 },
-          new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200, CostPerKg = 0.55, MaxUsage = 12, DryMatter = 90 }
+         new Feed { Name = "Mısır Silajı", EnergyContent = 2.2, ProteinContent = 80,NDFContent = 40.0, ADFContent = 30.0,  CostPerKg = 0.30, MaxUsage = 40, DryMatter = 35, MinUsage = 1 },
+new Feed { Name = "Yonca Kuru Otu", EnergyContent = 2.5, ProteinContent = 180,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.50, MaxUsage = 20, DryMatter = 85,MinUsage = 1 },
+new Feed { Name = "Buğday Kepeği", EnergyContent = 2.6, ProteinContent = 160,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 15, DryMatter = 89,MinUsage = 1 },
+new Feed { Name = "Arpa", EnergyContent = 3.0, ProteinContent = 120,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 88,MinUsage = 1},
+new Feed { Name = "Pamuk Tohumu", EnergyContent = 3.1, ProteinContent = 210,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.60, MaxUsage = 10, DryMatter = 92,MinUsage = 1 },
+new Feed { Name = "Soya Küspesi", EnergyContent = 3.2, ProteinContent = 440,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.70, MaxUsage = 10, DryMatter = 90,MinUsage = 1 },
+new Feed { Name = "Melas", EnergyContent = 2.4, ProteinContent = 50,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.25, MaxUsage = 5, DryMatter = 75,MinUsage = 1 },
+new Feed { Name = "Buğday", EnergyContent = 3.1, ProteinContent = 130,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.45, MaxUsage = 30, DryMatter = 87,MinUsage = 1 },
+new Feed { Name = "Ayçiçeği Küspesi", EnergyContent = 2.8, ProteinContent = 280,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 88,MinUsage = 1 },
+new Feed { Name = "Şeker Pancarı Posası", EnergyContent = 2.0, ProteinContent = 90,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.30, MaxUsage = 35, DryMatter = 20,MinUsage = 1 },
+new Feed { Name = "Yulaf", EnergyContent = 2.7, ProteinContent = 140,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 86,MinUsage = 1 },
+new Feed { Name = "Mısır Tane", EnergyContent = 3.4, ProteinContent = 90,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.50, MaxUsage = 30, DryMatter = 88,MinUsage = 1 },
+new Feed { Name = "Çavdar", EnergyContent = 3.0, ProteinContent = 110,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 85,MinUsage = 1 },
+new Feed { Name = "Kuru Yonca Peleti", EnergyContent = 2.4, ProteinContent = 180,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 15, DryMatter = 90,MinUsage = 1 },
+new Feed { Name = "Pamuk Tohumu Küspesi", EnergyContent = 2.9, ProteinContent = 250,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.65, MaxUsage = 15, DryMatter = 91,MinUsage = 1 },
+new Feed { Name = "Bezelye", EnergyContent = 2.7, ProteinContent = 220,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.45, MaxUsage = 15, DryMatter = 87,MinUsage = 1 },
+new Feed { Name = "Yonca Silajı", EnergyContent = 2.1, ProteinContent = 150,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.35, MaxUsage = 25, DryMatter = 40,MinUsage = 1 },
+new Feed { Name = "Mısır Gluteni", EnergyContent = 3.3, ProteinContent = 600,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.70, MaxUsage = 8, DryMatter = 89,MinUsage = 1 },
+new Feed { Name = "Kuru Arpa Posası", EnergyContent = 2.9, ProteinContent = 170,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.40, MaxUsage = 20, DryMatter = 92,MinUsage = 1 },
+new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200,NDFContent = 40.0, ADFContent = 30.0, CostPerKg = 0.55, MaxUsage = 12, DryMatter = 90,MinUsage = 1 }
     };
 
     protected override async Task OnInitializedAsync()
@@ -166,6 +168,7 @@
             <text>
                 <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="160px" />
                 <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max Usage" Width="200px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MinUsage)" Title="Min Usage" Width="200px" />
                 <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="160px" />
             </text>
         };

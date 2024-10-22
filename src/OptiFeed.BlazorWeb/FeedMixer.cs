@@ -13,8 +13,10 @@ public class FeedMixer
         double requiredDryMatter = animal.CalculateDryMatterRequirement();
         double requiredEnergy = animal.CalculateEnergyRequirement();
         double requiredProtein = animal.CalculateProteinRequirement();
+        double requiredAdf = animal.CalculateADFRequirement();
+        double requiredNdf = animal.CalculateNDFRequirement();
 
-        // OR-Tools solver'ını oluşturuyoruz.
+     
         Solver solver = Solver.CreateSolver("GLOP");
 
         if (solver == null)
@@ -27,7 +29,7 @@ public class FeedMixer
         foreach (var feed in feeds)
         {
             // Her yem için minimum 0 kg ve maksimum yem miktarı (örneğin %50 gibi) olarak sınırlıyoruz.
-            var variable = solver.MakeNumVar(0.5, feed.MaxUsage / 100 * animal.CalculateDryMatterRequirement(), feed.Name);
+            var variable = solver.MakeNumVar(feed.MinUsage, feed.MaxUsage / 100 * animal.CalculateDryMatterRequirement(), feed.Name);
             feedVars.Add(variable);
         }
 
@@ -49,6 +51,18 @@ public class FeedMixer
         for (int i = 0; i < feeds.Count; i++)
         {
             proteinConstraint.SetCoefficient(feedVars[i], feeds[i].ProteinContent);
+        }
+
+        Constraint adfConstraint = solver.MakeConstraint(requiredAdf, double.PositiveInfinity, "ADF");
+        for (int i = 0; i < feeds.Count; i++)
+        {
+            adfConstraint.SetCoefficient(feedVars[i], feeds[i].ADFContent);
+        }
+
+        Constraint ndfConstraint = solver.MakeConstraint(requiredNdf, double.PositiveInfinity, "NDF");
+        for (int i = 0; i < feeds.Count; i++)
+        {
+            ndfConstraint.SetCoefficient(feedVars[i], feeds[i].NDFContent);
         }
 
         // Amaç Fonksiyonu (Objective): Maliyeti minimize et.
