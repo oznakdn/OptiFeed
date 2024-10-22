@@ -16,12 +16,13 @@ public class FeedMixer
         double requiredAdf = animal.CalculateADFRequirement();
         double requiredNdf = animal.CalculateNDFRequirement();
 
-     
+
         Solver solver = Solver.CreateSolver("GLOP");
 
         if (solver == null)
         {
-            throw new Exception("GLOP solver couldn't be created.");
+            //throw new Exception("GLOP solver couldn't be created.");
+            return default!;
         }
 
         // Değişkenler: Her yem için kullanım miktarını (kg olarak) temsil eden değişkenler.
@@ -29,7 +30,11 @@ public class FeedMixer
         foreach (var feed in feeds)
         {
             // Her yem için minimum 0 kg ve maksimum yem miktarı (örneğin %50 gibi) olarak sınırlıyoruz.
-            var variable = solver.MakeNumVar(feed.MinUsage, feed.MaxUsage / 100 * animal.CalculateDryMatterRequirement(), feed.Name);
+            var variable = solver.MakeNumVar(
+                feed.MinUsage / 100 * animal.CalculateDryMatterRequirement(),
+                feed.MaxUsage / 100 * animal.CalculateDryMatterRequirement(), 
+                feed.Name);
+
             feedVars.Add(variable);
         }
 
