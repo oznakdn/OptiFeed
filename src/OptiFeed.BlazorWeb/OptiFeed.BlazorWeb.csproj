@@ -8,11 +8,20 @@
 
 	<ItemGroup>
 		<PackageReference Include="Masa.Blazor" Version="1.6.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.20">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Radzen.Blazor" Version="5.3.3" />
 		<PackageReference Include="Google.OrTools" Version="9.11.4210" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\OptiFeed.Core\OptiFeed.Core.csproj" />
+		<ProjectReference Include="..\OptiFeed.Persistence\OptiFeed.Persistence.csproj" />
 	</ItemGroup>
 </Project>

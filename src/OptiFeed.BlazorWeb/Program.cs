@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
+using OptiFeed.Persistence.Context;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddDbContext<AppDbContext>(opt=> opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddMasaBlazor(options =>
 //{
 //    options.ConfigureTheme(theme =>
