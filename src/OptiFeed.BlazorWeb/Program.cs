@@ -5,13 +5,15 @@ using Radzen;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddMasaBlazor(options =>
-{
-    options.ConfigureTheme(theme =>
-    {
-        theme.Dark = true;
-    });
-});
+//builder.Services.AddMasaBlazor(options =>
+//{
+//    options.ConfigureTheme(theme =>
+//    {
+//        theme.Dark = true;
+//    });
+//});
+
+builder.Services.AddMasaBlazor();
 
 builder.Services.AddRadzenComponents();
 

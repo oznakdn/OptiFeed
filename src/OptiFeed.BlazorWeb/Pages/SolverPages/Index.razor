@@ -32,15 +32,15 @@
             <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="()=>_step=2">Next</MButton>
         </MStepperContent>
         <MStepperContent Step="2">
-            <MCard Color="grey lighten-1" Style="margin-bottom:20px;">
+            <MCard Color="grey lighten-1" Style="margin-bottom:20px;margin-left:170px; margin-right:170px;">
                 <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenDataGrid Data="@sourceFeeds" AllowFiltering="true" AllowSorting="true" PageSize="5" AllowPaging="true"
+                    <RadzenDataGrid Data="@sourceFeeds" AllowFiltering="false" AllowSorting="true" PageSize="5" AllowPaging="true"
                                     RowRender="@RowRender" ondragover="event.preventDefault()" @ondrop=@(args => Move(targetFeeds, sourceFeeds))>
                         <Columns>
                             @RenderColumns()
                         </Columns>
                     </RadzenDataGrid>
-                    <RadzenDataGrid Data="@targetFeeds" AllowFiltering="true" AllowSorting="true" PageSize="5" AllowPaging="true"
+                    <RadzenDataGrid Data="@targetFeeds" AllowFiltering="false" AllowSorting="true" PageSize="5" AllowPaging="true"
                                     RowRender="@RowRender" ondragover="event.preventDefault()" @ondrop=@(args => Move(sourceFeeds, targetFeeds))>
                         <Columns>
                             @RenderColumns()
@@ -59,7 +59,7 @@
                 }
                 else
                 {
-                    <MSimpleTable Dark>
+                    <MSimpleTable>
                         <thead>
                             <tr>
                                 <th class="text-left">
@@ -88,7 +88,12 @@
                             }
                         </tbody>
                         <tfoot style="color:red;">
-                            Total Price:$ @result.TotalCost
+                            <tr>
+                                <td>TOTAL</td>
+                                <td>@(result.TotalCost.ToString("#.##")) $</td>
+                                <td>@(result.FeedMixes.Sum(x=>x.UsageAmountKg).ToString("#.##")) kg</td>
+                                <td>@(result.FeedMixes.Sum(x=>x.UsagePercentage).ToString("#.##")) %</td>
+                            </tr>
                         </tfoot>
                     </MSimpleTable>
                 }
@@ -166,10 +171,10 @@ new Feed { Name = "Nohut", EnergyContent = 2.6, ProteinContent = 200,NDFContent 
         return __builder =>
         {
             <text>
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="160px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max Usage" Width="200px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MinUsage)" Title="Min Usage" Width="200px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="160px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="200px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max" Width="100px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MinUsage)" Title="Min" Width="100px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="100px" />
             </text>
         };
     }

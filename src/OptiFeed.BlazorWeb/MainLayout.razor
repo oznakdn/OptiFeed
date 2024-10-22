@@ -3,49 +3,54 @@
 <MApp>
     <RadzenComponents />
     <!--SideBar-->
-    <MNavigationDrawer Absolute ExpandOnHover>
-        <MList>
-            <MListItem Link>
-                <MListItemContent>
-                    <MListItemTitle Class="text-h6">
-                        OptiFeed
-                    </MListItemTitle>
-                </MListItemContent>
-            </MListItem>
-        </MList>
-        <MList Nav Dense>
-            <MListItem Link Href="/">
-                <MListItemIcon>
-                    <MIcon>mdi-cow</MIcon>
-                </MListItemIcon>
-                <MListItemTitle>Animals</MListItemTitle>
-            </MListItem>
-            <MListItem Link Href="/feeds">
-                <MListItemIcon>
-                    <MIcon>mdi-sprout</MIcon>
-                </MListItemIcon>
-                <MListItemTitle>Feeds</MListItemTitle>
-            </MListItem>
-            <MListItem Link Href="/">
-                <MListItemIcon>
-                    <MIcon>mdi-silo</MIcon>
-                </MListItemIcon>
-                <MListItemTitle>Stocks</MListItemTitle>
-            </MListItem>
-            <MDivider></MDivider>
+    <MContainer>
+        <MRow>
+            <MNavigationDrawer Absolute ExpandOnHover Color="#9E9E9E">
+                <MList>
+                    <MListItem Link>
+                        <MListItemContent>
+                            <MListItemTitle Class="text-h6">
+                                OptiFeed
+                            </MListItemTitle>
+                        </MListItemContent>
+                    </MListItem>
+                </MList>
+                <MList Nav Dense>
+                    <MListItem Link Href="/">
+                        <MListItemIcon>
+                            <MIcon>mdi-cow</MIcon>
+                        </MListItemIcon>
+                        <MListItemTitle>Animals</MListItemTitle>
+                    </MListItem>
+                    <MListItem Link Href="/feeds">
+                        <MListItemIcon>
+                            <MIcon>mdi-sprout</MIcon>
+                        </MListItemIcon>
+                        <MListItemTitle>Feeds</MListItemTitle>
+                    </MListItem>
+                    <MListItem Link Href="/">
+                        <MListItemIcon>
+                            <MIcon>mdi-silo</MIcon>
+                        </MListItemIcon>
+                        <MListItemTitle>Stocks</MListItemTitle>
+                    </MListItem>
+                    <MDivider></MDivider>
 
-            <MListItem Link Href="/solver">
-                <MListItemIcon>
-                    <MIcon>mdi-math-integral-box</MIcon>
-                </MListItemIcon>
-                <MListItemTitle>Solver</MListItemTitle>
-            </MListItem>
+                    <MListItem Link Href="/solver">
+                        <MListItemIcon>
+                            <MIcon>mdi-math-integral-box</MIcon>
+                        </MListItemIcon>
+                        <MListItemTitle>Solver</MListItemTitle>
+                    </MListItem>
 
-        </MList>
+                </MList>
 
-    </MNavigationDrawer>
+            </MNavigationDrawer>
+        </MRow>
+    </MContainer>
+
     <!--TopBar-->
-    <MAppBar App>
+    <MAppBar App Color="#BDBDBD">
         <MIcon Large Color="success">mdi-sprout-outline</MIcon>
         <MAppBarTitle Style="font-size:32px;">OptiFeed</MAppBarTitle>
         <MSpacer></MSpacer>
@@ -63,7 +68,7 @@
         </MContainer>
     </MMain>
     <!--Footer-->
-    <MFooter Absolute>
+    <MFooter Absolute App Color="#9E9E9E">
         <MCol Class="text-center" Cols="12">
             @DateTime.Now.Year - <strong>OptiFeed</strong>
         </MCol>
