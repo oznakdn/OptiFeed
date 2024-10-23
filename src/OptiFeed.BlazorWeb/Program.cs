@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OptiFeed.Persistence.Context;
+using OptiFeed.Persistence.Repositories;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(opt=> opt.UseSqlServer(builder.Confi
 builder.Services.AddMasaBlazor();
 
 builder.Services.AddRadzenComponents();
+
+builder.Services.AddScoped<IFeedRepository,FeedRepository>();
 
 var app = builder.Build();
 

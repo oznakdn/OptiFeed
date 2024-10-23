@@ -2,7 +2,6 @@
 
 public class Animal
 {
-    public double Age { get; set; }            // Hayvanın yaşı
     public double LiveWeight { get; set; }     // Canlı ağırlık (kg)
     public double DailyMilkYield { get; set; } // Günlük süt verimi (litre)
     public double MilkFat { get; set; }       // Süt yağ oranı
