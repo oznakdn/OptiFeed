@@ -42,44 +42,44 @@
                                     <MCol Cols="12"
                                           Sm="12"
                                           Md="12">
-                                        <MTextField @bind-Value="_editedItem.Name"
+                                        <MTextField @bind-Value="feed.Name"
                                                     Label="Feed name"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.DryMatter"
+                                        <MTextField @bind-Value="feed.DryMatter"
                                                     Label="Dry Matter (%)"></MTextField>
                                     </MCol>
-    using OptiFeed.Persistence.Repositories;
+                                    using OptiFeed.Persistence.Repositories;
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.EnergyContent"
+                                        <MTextField @bind-Value="feed.EnergyContent"
                                                     Label="EnergyContent (Mcal/kg)"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.ProteinContent"
+                                        <MTextField @bind-Value="feed.ProteinContent"
                                                     Label="Protein (g/kg)"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.CostPerKg"
+                                        <MTextField @bind-Value="feed.CostPerKg"
                                                     Label="Cost ($/kg)"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.MinUsage"
+                                        <MTextField @bind-Value="feed.MinUsage"
                                                     Label="MinUsage (%)"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
-                                        <MTextField @bind-Value="_editedItem.MaxUsage"
+                                        <MTextField @bind-Value="feed.MaxUsage"
                                                     Label="MaxUsage (%)"></MTextField>
                                     </MCol>
 
@@ -120,9 +120,9 @@
             {
                 <MIcon Small
                        Class="mr-2"
-                       OnClick="()=>EditItem(context.Item)">mdi-pencil</MIcon>
+                       OnClick="()=>EditItem(context.Item.Id)">mdi-pencil</MIcon>
                 <MIcon Small
-                       OnClick="()=>DeleteItem(context.Item)">mdi-delete</MIcon>
+                       OnClick="()=>DeleteItem(context.Item.Id)">mdi-delete</MIcon>
             }
             else
             {
@@ -151,43 +151,29 @@
           new (){ Text= "ADF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
           new (){ Text= "NDF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
           new (){ Text= "Cost ($/kg)", Value= nameof(Feed.CostPerKg),Sortable = true},
-          new (){ Text= "Min Usage (%)", Value= nameof(Feed.MaxUsage),Sortable = true},
+          new (){ Text= "Min Usage (%)", Value= nameof(Feed.MinUsage),Sortable = true},
           new (){ Text= "Max Usage (%)", Value= nameof(Feed.MaxUsage),Sortable = true},
           new (){ Text= "Actions", Value= "actions",Sortable=false }
     };
 
     private IList<Feed> _feeds;
+    private Feed feed = new();
 
     private bool _dialog;
     private bool _dialogDelete;
-    private Feed _editedItem = new Feed
-    {
-        Name = "",
-        DryMatter = 0,
-        ProteinContent = 0,
-        EnergyContent = 0,
-        CostPerKg = 0,
-        MaxUsage = 0,
-        ADFContent = 0,
-        NDFContent = 0
-    };
-    private int _editedIndex = -1;
 
     public string FormTitle
     {
         get
         {
-            return _editedIndex == -1 ? "New Feed" : "Edit Feed";
+            return feed.Id == 0 ? "New Feed" : "Edit Feed";
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-       await Initialize();
+        await Initialize();
     }
-
-
-   
 
 
     public async Task Initialize()
@@ -198,79 +184,51 @@
     public void Close()
     {
         _dialog = false;
-        _editedItem = new Feed();
-        _editedIndex = -1;
+        feed = new Feed();
     }
 
-    public void Save()
+    public async Task Save()
     {
-        if (_editedIndex > -1)
+        if (feed.Id != 0)
         {
-            var item = _feeds[_editedIndex];
-            item.MaxUsage = _editedItem.MaxUsage;
-            item.MinUsage = _editedItem.MinUsage;
-            item.DryMatter = _editedItem.DryMatter;
-            item.EnergyContent = _editedItem.EnergyContent;
-            item.ProteinContent = _editedItem.ProteinContent;
-            item.CostPerKg = _editedItem.CostPerKg;
-            item.Name = _editedItem.Name;
-            item.ADFContent = _editedItem.ADFContent;
-            item.NDFContent = _editedItem.NDFContent;
-
+            await FeedRepository.UpdateFeedAsync(feed);
+            await Initialize();
+            StateHasChanged();
         }
         else
         {
-            _feeds.Add(_editedItem);
+            await FeedRepository.AddFeedAsync(feed);
+            await Initialize();
+            StateHasChanged();
         }
         Close();
     }
 
-    public void EditItem(Feed item)
+
+
+    public void EditItem(int id)
     {
-        _editedIndex = _feeds.IndexOf(item);
-        _editedItem = new Feed()
-        {
-            DryMatter = item.DryMatter,
-            EnergyContent = item.EnergyContent,
-            ProteinContent = item.ProteinContent,
-            Name = item.Name,
-            CostPerKg = item.CostPerKg,
-            MaxUsage = item.MaxUsage,
-            MinUsage = item.MinUsage,
-            ADFContent = item.ADFContent,
-            NDFContent = item.NDFContent
-        };
+        feed = _feeds.SingleOrDefault(x => x.Id == id)!;
         _dialog = true;
     }
 
-    public void DeleteItem(Feed item)
+    private Feed deletedFeed;
+    public void DeleteItem(int id)
     {
-        _editedIndex = _feeds.IndexOf(item);
-        _editedItem = new Feed()
-        {
-            DryMatter = item.DryMatter,
-            EnergyContent = item.EnergyContent,
-            ProteinContent = item.ProteinContent,
-            Name = item.Name,
-            CostPerKg = item.CostPerKg,
-            MaxUsage = item.MaxUsage,
-            MinUsage = item.MinUsage,
-            ADFContent = item.ADFContent,
-            NDFContent = item.NDFContent
-        };
+        deletedFeed = _feeds.SingleOrDefault(x => x.Id == id)!;
         _dialogDelete = true;
     }
 
-    public void DeleteItemConfirm()
+    public async Task DeleteItemConfirm()
     {
-        _feeds.RemoveAt(_editedIndex);
+        await FeedRepository.DeleteFeedAsync(deletedFeed);
         CloseDelete();
+        await Initialize();
+        StateHasChanged();
     }
 
     public void CloseDelete()
     {
         _dialogDelete = false;
-        _editedItem = new();
-        _editedIndex = -1;
     }
 }
