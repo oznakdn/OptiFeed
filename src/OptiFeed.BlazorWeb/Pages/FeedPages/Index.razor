@@ -1,6 +1,7 @@
 ﻿@page "/feeds"
 @using OptiFeed.Core.Models
 @using ClosedXML.Excel
+@using Microsoft.AspNetCore.Components.Forms
 @inject IFeedRepository FeedRepository
 
 
@@ -24,7 +25,9 @@
                           Inset
                           Vertical></MDivider>
                 <MSpacer></MSpacer>
-                <Microsoft.AspNetCore.Components.Forms.InputFile OnChange="Upload" class="form-control" />
+                <MFileInput TValue="IBrowserFile"
+                            OnChange="Upload"
+                            Label="Multiple Feed from Excel"></MFileInput>
                 <MButton Color="primary"
                          Dark
                          Class="mb-2"
@@ -234,10 +237,12 @@
         _dialogDelete = false;
     }
 
-    private async Task Upload()
+    private async Task Upload(IBrowserFile file)
     {
-        string file = @"C:\Users\W10\OneDrive\Desktop\Yemler.xlsx";
-        using var workbook = new XLWorkbook(file);
+        //Yemler.xlsx
+        string path = $"C:/Users/W10/OneDrive/Desktop/{file.Name}";
+
+        using var workbook = new XLWorkbook(path);
 
         var worksheet = workbook.Worksheets.First();
         var rows = worksheet.RowsUsed().Skip(1);
@@ -260,6 +265,9 @@
 
             await FeedRepository.AddFeedAsync(feed);
         }
+
+        await Initialize();
+        StateHasChanged();
 
     }
 }
