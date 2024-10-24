@@ -136,7 +136,7 @@
             }
         </ItemColContent>
         <NoDataContent>
-            
+
         </NoDataContent>
     </MDataTable>
 </MCard>
@@ -268,8 +268,11 @@
             await Initialize();
             StateHasChanged();
         }
+        else
+        {
+            return;
+        }
 
-        return;
 
     }
 }

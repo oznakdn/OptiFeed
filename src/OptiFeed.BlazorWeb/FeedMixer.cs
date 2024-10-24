@@ -55,7 +55,7 @@ public class FeedMixer
         Constraint proteinConstraint = solver.MakeConstraint(requiredProtein, double.PositiveInfinity, "Protein");
         for (int i = 0; i < feeds.Count; i++)
         {
-            proteinConstraint.SetCoefficient(feedVars[i], feeds[i].ProteinContent);
+            proteinConstraint.SetCoefficient(feedVars[i], (feeds[i].DryMatter * (feeds[i].ProteinContent)/100));
         }
 
         Constraint adfConstraint = solver.MakeConstraint(requiredAdf, double.PositiveInfinity, "ADF");
