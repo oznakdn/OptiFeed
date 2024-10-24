@@ -1,5 +1,6 @@
 ﻿@page "/feeds"
 @using OptiFeed.Core.Models
+@using ClosedXML.Excel
 @inject IFeedRepository FeedRepository
 
 
@@ -23,6 +24,7 @@
                           Inset
                           Vertical></MDivider>
                 <MSpacer></MSpacer>
+                <Microsoft.AspNetCore.Components.Forms.InputFile OnChange="Upload" class="form-control" />
                 <MButton Color="primary"
                          Dark
                          Class="mb-2"
@@ -230,5 +232,34 @@
     public void CloseDelete()
     {
         _dialogDelete = false;
+    }
+
+    private async Task Upload()
+    {
+        string file = @"C:\Users\W10\OneDrive\Desktop\Yemler.xlsx";
+        using var workbook = new XLWorkbook(file);
+
+        var worksheet = workbook.Worksheets.First();
+        var rows = worksheet.RowsUsed().Skip(1);
+
+
+        foreach (var row in rows)
+        {
+            var feed = new Feed()
+            {
+                Name = row.Cell(1).GetValue<string>(),
+                EnergyContent = row.Cell(2).GetValue<Double>(),
+                DryMatter = row.Cell(3).GetValue<Double>(),
+                ProteinContent = row.Cell(4).GetValue<double>(),
+                ADFContent = row.Cell(5).GetValue<Double>(),
+                NDFContent = row.Cell(6).GetValue<Double>(),
+                MinUsage = row.Cell(7).GetValue<Double>(),
+                MaxUsage = row.Cell(8).GetValue<Double>(),
+                CostPerKg = row.Cell(9).GetValue<Double>()
+            };
+
+            await FeedRepository.AddFeedAsync(feed);
+        }
+
     }
 }
