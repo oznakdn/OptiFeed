@@ -26,6 +26,7 @@
                           Vertical></MDivider>
                 <MSpacer></MSpacer>
                 <MFileInput TValue="IBrowserFile"
+                            Style="margin-right:150px;"
                             OnChange="Upload"
                             Label="Multiple Feed from Excel"></MFileInput>
                 <MButton Color="primary"
@@ -135,10 +136,7 @@
             }
         </ItemColContent>
         <NoDataContent>
-            <MButton Color="primary"
-                     OnClick="Initialize">
-                Reset
-            </MButton>
+            
         </NoDataContent>
     </MDataTable>
 </MCard>
@@ -241,33 +239,37 @@
     {
         //Yemler.xlsx
         string path = $"C:/Users/W10/OneDrive/Desktop/{file.Name}";
-
-        using var workbook = new XLWorkbook(path);
-
-        var worksheet = workbook.Worksheets.First();
-        var rows = worksheet.RowsUsed().Skip(1);
-
-
-        foreach (var row in rows)
+        if (!string.IsNullOrEmpty(path))
         {
-            var feed = new Feed()
-            {
-                Name = row.Cell(1).GetValue<string>(),
-                EnergyContent = row.Cell(2).GetValue<Double>(),
-                DryMatter = row.Cell(3).GetValue<Double>(),
-                ProteinContent = row.Cell(4).GetValue<double>(),
-                ADFContent = row.Cell(5).GetValue<Double>(),
-                NDFContent = row.Cell(6).GetValue<Double>(),
-                MinUsage = row.Cell(7).GetValue<Double>(),
-                MaxUsage = row.Cell(8).GetValue<Double>(),
-                CostPerKg = row.Cell(9).GetValue<Double>()
-            };
+            using var workbook = new XLWorkbook(path);
 
-            await FeedRepository.AddFeedAsync(feed);
+            var worksheet = workbook.Worksheets.First();
+            var rows = worksheet.RowsUsed().Skip(1);
+
+
+            foreach (var row in rows)
+            {
+                var feed = new Feed()
+                {
+                    Name = row.Cell(1).GetValue<string>(),
+                    EnergyContent = row.Cell(2).GetValue<Double>(),
+                    DryMatter = row.Cell(3).GetValue<Double>(),
+                    ProteinContent = row.Cell(4).GetValue<double>(),
+                    ADFContent = row.Cell(5).GetValue<Double>(),
+                    NDFContent = row.Cell(6).GetValue<Double>(),
+                    MinUsage = row.Cell(7).GetValue<Double>(),
+                    MaxUsage = row.Cell(8).GetValue<Double>(),
+                    CostPerKg = row.Cell(9).GetValue<Double>()
+                };
+
+                await FeedRepository.AddFeedAsync(feed);
+            }
+
+            await Initialize();
+            StateHasChanged();
         }
 
-        await Initialize();
-        StateHasChanged();
+        return;
 
     }
 }
