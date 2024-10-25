@@ -22,15 +22,19 @@
         <MStepperContent Step="1">
             <MRow>
                 <MCol>
-                    <MForm Model="Animal"
-                           AutoLabel
-                           Class="mx-auto"
-                           Style="width: 400px">
-                        <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
-                        <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
-                        <MTextField Label="Milk fat" @bind-Value="Animal.MilkFat" Type="number" Filled></MTextField>
-                        <MTextField Label="Milk Protein" @bind-Value="Animal.MilkProtein" Type="number" Filled></MTextField>
-                    </MForm>
+                    <MCard>
+                        
+                        <MCardTitle>Cow Information</MCardTitle>
+                        <MForm Model="Animal"
+                               AutoLabel
+                               Class="mx-auto"
+                               Style="width: 400px">
+                            <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
+                            <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
+                            <MTextField Label="Milk fat" @bind-Value="Animal.MilkFat" Type="number" Filled></MTextField>
+                            <MTextField Label="Milk Protein" @bind-Value="Animal.MilkProtein" Type="number" Filled></MTextField>
+                        </MForm>
+                    </MCard>
                 </MCol>
                 <MCol>
                     
@@ -46,7 +50,7 @@
                     </MCard>
                 </MCol>
             </MRow>
-            <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="() => _step = 2">Next</MButton>
+            <MButton Style="margin-top: 10px" Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="() => _step = 2">Next</MButton>
         </MStepperContent>
         <MStepperContent Step="2">
             <MCard Color="grey lighten-1" Style="margin-bottom:20px;margin-left:170px; margin-right:170px;">
