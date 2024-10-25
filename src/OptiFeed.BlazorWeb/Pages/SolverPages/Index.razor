@@ -20,16 +20,33 @@
 
     <MStepperItems>
         <MStepperContent Step="1">
-            <MForm Model="Animal"
-                   AutoLabel
-                   Class="mx-auto"
-                   Style="width: 400px">
-                <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
-                <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
-                <MTextField Label="Milk fat" @bind-Value="Animal.MilkFat" Type="number" Filled></MTextField>
-                <MTextField Label="Milk Protein" @bind-Value="Animal.MilkProtein" Type="number" Filled></MTextField>
-            </MForm>
-            <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="()=>_step=2">Next</MButton>
+            <MRow>
+                <MCol>
+                    <MForm Model="Animal"
+                           AutoLabel
+                           Class="mx-auto"
+                           Style="width: 400px">
+                        <MTextField Label="Live weight" @bind-Value="Animal.LiveWeight" Type="number" Filled></MTextField>
+                        <MTextField Label="Daily milk yield" @bind-Value="Animal.DailyMilkYield" Type="number" Filled></MTextField>
+                        <MTextField Label="Milk fat" @bind-Value="Animal.MilkFat" Type="number" Filled></MTextField>
+                        <MTextField Label="Milk Protein" @bind-Value="Animal.MilkProtein" Type="number" Filled></MTextField>
+                    </MForm>
+                </MCol>
+                <MCol>
+                    
+                    <MCard>
+                        <MCardTitle>Requirements</MCardTitle>
+                        <MList>
+                            <MListItem>Dry Matter (kg): @Animal.CalculateDryMatterRequirement()</MListItem>
+                            <MListItem>Energy (MCal): @Animal.CalculateEnergyRequirement()</MListItem>
+                            <MListItem>Protein (g): @Animal.CalculateProteinRequirement()</MListItem>
+                            <MListItem>Adf (%): @Animal.CalculateADFRequirement()</MListItem>
+                            <MListItem>Ndf (%): @Animal.CalculateDryMatterRequirement()</MListItem>
+                        </MList>
+                    </MCard>
+                </MCol>
+            </MRow>
+            <MButton Color="primary" Disabled=@(Animal.LiveWeight == 0 ? true : false) OnClick="() => _step = 2">Next</MButton>
         </MStepperContent>
         <MStepperContent Step="2">
             <MCard Color="grey lighten-1" Style="margin-bottom:20px;margin-left:170px; margin-right:170px;">
