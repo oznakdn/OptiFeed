@@ -57,7 +57,6 @@
                                         <MTextField @bind-Value="feed.DryMatter"
                                                     Label="Dry Matter (%)"></MTextField>
                                     </MCol>
-                                    using OptiFeed.Persistence.Repositories;
                                     <MCol Cols="12"
                                           Sm="6"
                                           Md="4">
@@ -69,6 +68,18 @@
                                           Md="4">
                                         <MTextField @bind-Value="feed.ProteinContent"
                                                     Label="Protein (g/kg)"></MTextField>
+                                    </MCol>
+                                    <MCol Cols="12"
+                                          Sm="6"
+                                          Md="4">
+                                        <MTextField @bind-Value="feed.ADFContent"
+                                                    Label="Adf (%)"></MTextField>
+                                    </MCol>
+                                    <MCol Cols="12"
+                                          Sm="6"
+                                          Md="4">
+                                        <MTextField @bind-Value="feed.NDFContent"
+                                                    Label="Ndf (%)"></MTextField>
                                     </MCol>
                                     <MCol Cols="12"
                                           Sm="6"
@@ -151,8 +162,8 @@
           new (){ Text= "Dry Matter (%)", Value= nameof(Feed.DryMatter),Sortable = true},
           new (){ Text= "Energy (Mcal/kg)", Value= nameof(Feed.EnergyContent),Sortable = true},
           new (){ Text= "Protein (g/kg)", Value= nameof(Feed.ProteinContent),Sortable = true},
-          new (){ Text= "ADF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
-          new (){ Text= "NDF (%/kg)", Value= nameof(Feed.ProteinContent),Sortable = false},
+          new (){ Text= "ADF (%)", Value= nameof(Feed.ProteinContent),Sortable = false},
+          new (){ Text= "NDF (%)", Value= nameof(Feed.ProteinContent),Sortable = false},
           new (){ Text= "Cost ($/kg)", Value= nameof(Feed.CostPerKg),Sortable = true},
           new (){ Text= "Min Usage (%)", Value= nameof(Feed.MinUsage),Sortable = true},
           new (){ Text= "Max Usage (%)", Value= nameof(Feed.MaxUsage),Sortable = true},

@@ -21,15 +21,12 @@ public class FeedMixer
 
         if (solver == null)
         {
-            //throw new Exception("GLOP solver couldn't be created.");
             return default!;
         }
-
-        // Değişkenler: Her yem için kullanım miktarını (kg olarak) temsil eden değişkenler.
+        
         List<Variable> feedVars = new List<Variable>();
         foreach (var feed in feeds)
         {
-            // Her yem için minimum 0 kg ve maksimum yem miktarı (örneğin %50 gibi) olarak sınırlıyoruz.
             var variable = solver.MakeNumVar(
                 feed.MinUsage / 100 * animal.CalculateDryMatterRequirement(),
                 feed.MaxUsage / 100 * animal.CalculateDryMatterRequirement(), 
@@ -38,9 +35,8 @@ public class FeedMixer
             feedVars.Add(variable);
         }
 
-        // Kısıtlar: Kuru madde, enerji ve protein gereksinimlerini karşıla
+       
         Constraint dryMatterConstraint = solver.MakeConstraint(requiredDryMatter, double.PositiveInfinity, "DryMatter");
-
         for (int i = 0; i < feeds.Count; i++)
         {
             dryMatterConstraint.SetCoefficient(feedVars[i], feeds[i].DryMatter / 100);  // % kuru madde oranını kullan
@@ -55,7 +51,7 @@ public class FeedMixer
         Constraint proteinConstraint = solver.MakeConstraint(requiredProtein, double.PositiveInfinity, "Protein");
         for (int i = 0; i < feeds.Count; i++)
         {
-            proteinConstraint.SetCoefficient(feedVars[i], (feeds[i].DryMatter * (feeds[i].ProteinContent)/100));
+            proteinConstraint.SetCoefficient(feedVars[i], feeds[i].ProteinContent);
         }
 
         Constraint adfConstraint = solver.MakeConstraint(requiredAdf, double.PositiveInfinity, "ADF");
@@ -70,7 +66,7 @@ public class FeedMixer
             ndfConstraint.SetCoefficient(feedVars[i], feeds[i].NDFContent);
         }
 
-        // Amaç Fonksiyonu (Objective): Maliyeti minimize et.
+        
         Objective objective = solver.Objective();
         for (int i = 0; i < feeds.Count; i++)
         {
@@ -78,10 +74,10 @@ public class FeedMixer
         }
         objective.SetMinimization();
 
-        // Problemi çözüyoruz.
+       
         Solver.ResultStatus resultStatus = solver.Solve();
 
-        // Sonuçlar
+        
         var feedMixSummary = new FeedMixSummary { FeedMixes = new List<FeedMixResult>(), TotalCost = 0 };
 
         if (resultStatus == Solver.ResultStatus.OPTIMAL)
@@ -95,7 +91,7 @@ public class FeedMixer
                 double feedUsageAmount = feedVars[i].SolutionValue();
                 if (feedUsageAmount > 0)
                 {
-                    // Her bir yem miktarının hayvanın gereksinimine göre normalize edilmesi
+                    
                     double usagePercentage = (feedUsageAmount * feeds[i].DryMatter) / totalDryMatterUsed * 100;
                     double cost = feedUsageAmount * feeds[i].CostPerKg;
 
