@@ -23,7 +23,7 @@
             <MRow>
                 <MCol>
                     <MCard>
-                        
+
                         <MCardTitle Style="justify-content: center">Cow Information</MCardTitle>
                         <MForm Model="Animal"
                                AutoLabel
@@ -37,7 +37,7 @@
                     </MCard>
                 </MCol>
                 <MCol>
-                    
+
                     <MCard>
                         <MCardTitle Style="justify-content: center">Requirements</MCardTitle>
                         <MList>
@@ -119,8 +119,8 @@
                     </MSimpleTable>
                 }
             </MCard>
-            @*<MButton Color="primary" OnClick="()=>Calculate()">Calculate</MButton>*@
             <MButton Color="error" OnClick="()=>_step=2">Back</MButton>
+            <MButton Color="success" Disabled=@(!isSolved ? true : false) OnClick="SaveRation">Save</MButton>
         </MStepperContent>
     </MStepperItems>
 </MStepper>
@@ -134,7 +134,7 @@
     ObservableCollection<Feed> sourceFeeds;
     ObservableCollection<Feed> targetFeeds = new();
 
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -179,9 +179,19 @@
         };
     }
 
+    bool isSolved;
     void Calculate()
     {
         result = FeedMixer.CalculateOptimalFeedMix(Animal, targetFeeds.ToList());
+        if (result.FeedMixes.Count > 0)
+            isSolved = true;
+        else
+            isSolved = false;
         _step = 3;
+    }
+
+    void SaveRation()
+    {
+
     }
 }
