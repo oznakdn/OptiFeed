@@ -20,6 +20,8 @@ builder.Services.AddMasaBlazor();
 builder.Services.AddRadzenComponents();
 
 builder.Services.AddScoped<IFeedRepository,FeedRepository>();
+builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
+
 
 var app = builder.Build();
 

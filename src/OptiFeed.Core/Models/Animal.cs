@@ -2,10 +2,15 @@
 
 public class Animal
 {
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public string? TagNumber { get; set; }
     public double LiveWeight { get; set; }     // Canlı ağırlık (kg)
     public double DailyMilkYield { get; set; } // Günlük süt verimi (litre)
     public double MilkFat { get; set; }       // Süt yağ oranı
     public double MilkProtein { get; set; }   // Süt protein oranı
+
+    public ICollection<Ration> Rations { get; set; } = new HashSet<Ration>();
 
     public double CalculateDryMatterRequirement()
     {
