@@ -26,11 +26,11 @@
         <MStepperContent Step="1">
             <MRow>
                 <MCol>
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.5rem" class="rz-p-sm-12">
-                            <RadzenLabel Text="Select current animal" Component="DropDownClear"/>
-                            <RadzenDropDown TValue="int" Change="@(async (args) => await SelectAnimal(value))" @bind-Value=@value Data=@animals TextProperty="@nameof(Animal.Name)" ValueProperty="Id" AllowClear=true Placeholder="Select" Style="width: 100%; max-width: 400px;" Name="DropDownClear"/>
-                        </RadzenStack>
-                  
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.5rem" class="rz-p-sm-12">
+                        <RadzenLabel Text="Select current animal" Component="DropDownClear"/>
+                        <RadzenDropDown TValue="int" Change="@(async (args) => await SelectAnimal(value))" @bind-Value=@value Data=@animals TextProperty="@nameof(Animal.Name)" ValueProperty="Id" AllowClear=true Placeholder="Select" Style="width: 100%; max-width: 400px;" Name="DropDownClear"/>
+                    </RadzenStack>
+
                     <MCard>
                         <MCardTitle Style="justify-content: center">Animal Information</MCardTitle>
                         <EditForm Model="Animal" OnValidSubmit="SaveAnimal">
@@ -66,9 +66,9 @@
                     </MCard>
                     @if (!string.IsNullOrEmpty(savedAnimalMessage))
                     {
-                        <MCard>
-                            <p style="color:forestgreen"></p>
-                        </MCard>
+                        <RadzenAlert AllowClose="true" AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Shade="Shade.Lighter">
+                            @savedAnimalMessage
+                        </RadzenAlert>
                     }
                 </MCol>
                 <MCol>
@@ -117,39 +117,39 @@
                 {
                     <MSimpleTable>
                         <thead>
-                            <tr>
-                                <th class="text-left">
-                                    Feed Name
-                                </th>
-                                <th class="text-left">
-                                    Price
-                                </th>
-                                <th class="text-left">
-                                    Amoung (Kg)
-                                </th>
-                                <th class="text-left">
-                                    Percentage (%)
-                                </th>
-                            </tr>
+                        <tr>
+                            <th class="text-left">
+                                Feed Name
+                            </th>
+                            <th class="text-left">
+                                Price
+                            </th>
+                            <th class="text-left">
+                                Amoung (Kg)
+                            </th>
+                            <th class="text-left">
+                                Percentage (%)
+                            </th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in result.FeedMixes)
-                            {
-                                <tr @key="item.FeedName">
-                                    <td>@item.FeedName</td>
-                                    <td>@item.PricePerKg</td>
-                                    <td>@(item.UsageAmountKg.ToString("#.##"))</td>
-                                    <td>@(item.UsagePercentage.ToString("#.##"))</td>
-                                </tr>
-                            }
+                        @foreach (var item in result.FeedMixes)
+                        {
+                            <tr @key="item.FeedName">
+                                <td>@item.FeedName</td>
+                                <td>@item.PricePerKg</td>
+                                <td>@(item.UsageAmountKg.ToString("#.##"))</td>
+                                <td>@(item.UsagePercentage.ToString("#.##"))</td>
+                            </tr>
+                        }
                         </tbody>
                         <tfoot style="color:red;">
-                            <tr>
-                                <td>TOTAL</td>
-                                <td>@(result.TotalCost.ToString("#.##")) $</td>
-                                <td>@(result.FeedMixes.Sum(x => x.UsageAmountKg).ToString("#.##")) kg</td>
-                                <td>@(result.FeedMixes.Sum(x => x.UsagePercentage).ToString("#.##")) %</td>
-                            </tr>
+                        <tr>
+                            <td>TOTAL</td>
+                            <td>@(result.TotalCost.ToString("#.##")) $</td>
+                            <td>@(result.FeedMixes.Sum(x => x.UsageAmountKg).ToString("#.##")) kg</td>
+                            <td>@(result.FeedMixes.Sum(x => x.UsagePercentage).ToString("#.##")) %</td>
+                        </tr>
                         </tfoot>
                     </MSimpleTable>
                 }
@@ -177,14 +177,24 @@
     {
         await base.OnInitializedAsync();
 
-        var animalsData = await AnimalRepository.GetAnimalsAsync();
-        animals = animalsData.OrderBy(x=>x.Id).ToList();
+        await GetAnimals();
 
         var feeds = await FeedRepository.GetFeedsAsync();
         sourceFeeds = new ObservableCollection<Feed>(feeds);
     }
 
     Feed draggedItem;
+
+    async Task GetAnimal(int id)
+    {
+        Animal = await AnimalRepository.GetAnimalAsync(id);
+    }
+
+    async Task GetAnimals()
+    {
+        var animalsData = await AnimalRepository.GetAnimalsAsync();
+        animals = animalsData.OrderBy(x => x.Id).ToList();
+    }
 
     void RowRender(RowRenderEventArgs<Feed> args)
     {
@@ -200,6 +210,7 @@
         {
             source.Remove(draggedItem);
         }
+
         if (!target.Contains(draggedItem))
         {
             target.Add(draggedItem);
@@ -211,36 +222,43 @@
         return __builder =>
         {
             <text>
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="200px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max" Width="100px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MinUsage)" Title="Min" Width="100px" />
-                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="100px" />
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.Name)" Title="Name" Width="200px"/>
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MaxUsage)" Title="Max" Width="100px"/>
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.MinUsage)" Title="Min" Width="100px"/>
+                <RadzenDataGridColumn TItem="Feed" Property="@nameof(Feed.CostPerKg)" Title="Cost" Width="100px"/>
             </text>
         };
     }
 
     async Task SelectAnimal(int id)
     {
-        if (value >0)
+        if (value > 0)
         {
-            Animal = await AnimalRepository.GetAnimalAsync(id);
+           await GetAnimal(id);
         }
         else
         {
             Animal = new();
         }
-
     }
 
-    string savedAnimalMessage = "";
+    string savedAnimalMessage = string.Empty;
+
     private async Task SaveAnimal()
     {
         var result = await AnimalRepository.AddAnimalAsync(Animal);
         if (result)
+        {
             savedAnimalMessage = "Animal has saved successfully.";
+            Animal = new();
+            await GetAnimals();
+            StateHasChanged();
+        }
+        
     }
 
     bool isSolved;
+
     void Calculate()
     {
         result = FeedMixer.CalculateOptimalFeedMix(Animal, targetFeeds.ToList());
@@ -251,11 +269,9 @@
         _step = 3;
     }
 
-    
+
     void SaveRation()
     {
-
     }
-}
- 
 
+}
