@@ -1,5 +1,6 @@
 ﻿@page "/solver"
 @using System.Collections.ObjectModel
+@using DocumentFormat.OpenXml.Office2019.Excel.RichData
 @using OptiFeed.Core.Result
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -25,18 +26,11 @@
         <MStepperContent Step="1">
             <MRow>
                 <MCol>
-                    @* <MCard Style="margin-top:10px; margin-bottom:10px;"> *@
-                    @* *@
-                    @*     <select @ref="Animal" id="myselect" class="form-control" *@
-                    @*             @onchange="SelectAnimal"> *@
-                    @*         <option selected value="-1">select one</option> *@
-                    @*         @foreach (var item in animals) *@
-                    @*         { *@
-                    @*             <option value="@item.Id">@item.Name</option> *@
-                    @*         } *@
-                    @*     </select> *@
-                    @* *@
-                    @* </MCard> *@
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.5rem" class="rz-p-sm-12">
+                            <RadzenLabel Text="Select current animal" Component="DropDownClear"/>
+                            <RadzenDropDown TValue="int" Change="@(async (args) => await SelectAnimal(value))" @bind-Value=@value Data=@animals TextProperty="@nameof(Animal.Name)" ValueProperty="Id" AllowClear=true Placeholder="Select" Style="width: 100%; max-width: 400px;" Name="DropDownClear"/>
+                        </RadzenStack>
+                  
                     <MCard>
                         <MCardTitle Style="justify-content: center">Animal Information</MCardTitle>
                         <EditForm Model="Animal" OnValidSubmit="SaveAnimal">
@@ -175,7 +169,8 @@
     ObservableCollection<Feed> sourceFeeds;
     ObservableCollection<Feed> targetFeeds = new();
 
-    List<Animal> animals = new List<Animal>();
+    int value = 0;
+    IEnumerable<Animal> animals = new List<Animal>();
 
 
     protected override async Task OnInitializedAsync()
@@ -183,7 +178,7 @@
         await base.OnInitializedAsync();
 
         var animalsData = await AnimalRepository.GetAnimalsAsync();
-        animals = animalsData.ToList();
+        animals = animalsData.OrderBy(x=>x.Id).ToList();
 
         var feeds = await FeedRepository.GetFeedsAsync();
         sourceFeeds = new ObservableCollection<Feed>(feeds);
@@ -224,15 +219,23 @@
         };
     }
 
-    void SelectAnimal()
+    async Task SelectAnimal(int id)
     {
-        Animal = AnimalRepository.GetAnimalAsync(Animal.Id).Result;
+        if (value >0)
+        {
+            Animal = await AnimalRepository.GetAnimalAsync(id);
+        }
+        else
+        {
+            Animal = new();
+        }
+
     }
 
     string savedAnimalMessage = "";
     private async Task SaveAnimal()
     {
-        var result = await AnimalRepository.AddFeedAsync(Animal);
+        var result = await AnimalRepository.AddAnimalAsync(Animal);
         if (result)
             savedAnimalMessage = "Animal has saved successfully.";
     }
@@ -248,8 +251,7 @@
         _step = 3;
     }
 
-
-
+    
     void SaveRation()
     {
 
