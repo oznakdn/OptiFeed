@@ -157,6 +157,12 @@
                     </MSimpleTable>
                 }
             </MCard>
+            @if (!string.IsNullOrEmpty(savedRationMessage))
+            {
+            <RadzenAlert AllowClose="true" AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Shade="Shade.Lighter">
+                @savedRationMessage
+            </RadzenAlert>
+            }
             <MButton Color="error" OnClick="() => _step = 2">Back</MButton>
             <MButton Color="success" Disabled=@(!isSolved ? true : false) OnClick="SaveRation">Save</MButton>
         </MStepperContent>
@@ -277,6 +283,7 @@
     }
 
 
+    string savedRationMessage = string.Empty;
     async Task SaveRation()
     {
         if (Animal.Id != 0)
@@ -300,7 +307,11 @@
                         PricePerKg = x.PricePerKg
                     }).ToList();
 
-                    await RatioFeedItemRepository.AddRationFeedItemsAsync(feedItems);
+                    var createdFeedItemsResult = await RatioFeedItemRepository.AddRationFeedItemsAsync(feedItems);
+                    if (createdFeedItemsResult)
+                    {
+                        savedRationMessage = "Ration has created successfully.";
+                    }
                 }
             }
         }
