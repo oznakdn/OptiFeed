@@ -21,7 +21,9 @@ builder.Services.AddRadzenComponents();
 
 builder.Services.AddScoped<IFeedRepository,FeedRepository>();
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
-
+builder.Services.AddScoped<IRationRepository, RationRepository>();
+builder.Services.AddScoped<IRationDetailRepository, RationDetailRepository>();
+builder.Services.AddScoped<IRatioFeedItemRepository, RatioFeedItemRepository>();
 
 var app = builder.Build();
 

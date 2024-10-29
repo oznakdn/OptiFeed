@@ -6,6 +6,9 @@
 
 @inject IFeedRepository FeedRepository
 @inject IAnimalRepository AnimalRepository
+@inject IRationRepository RationRepository
+@inject IRationDetailRepository RationDetailRepository
+@inject IRatioFeedItemRepository RatioFeedItemRepository
 
 <MStepper Value="_step">
     <MStepperHeader>
@@ -61,7 +64,7 @@
                                 </MCol>
                             </MRow>
 
-                            <MButton Type="submit" Style="margin-bottom:10px;" Color="success" Small="true">Save Animal</MButton>
+                            <MButton Type="submit" Disabled="@(value == 0 ? false : true)" Style="margin-bottom:10px;" Color="success" Small="true">Save Animal</MButton>
                         </EditForm>
                     </MCard>
                     @if (!string.IsNullOrEmpty(savedAnimalMessage))
@@ -163,6 +166,9 @@
 @code {
 
     private Animal Animal = new();
+    private Ration Ration = new();
+    private RationDetail RationDetail = new();
+
     private FeedMixSummary result;
     private int _step = 1;
 
@@ -234,7 +240,7 @@
     {
         if (value > 0)
         {
-           await GetAnimal(id);
+            await GetAnimal(id);
         }
         else
         {
@@ -243,18 +249,19 @@
     }
 
     string savedAnimalMessage = string.Empty;
-
     private async Task SaveAnimal()
     {
-        var result = await AnimalRepository.AddAnimalAsync(Animal);
-        if (result)
+        if (value == 0)
         {
-            savedAnimalMessage = "Animal has saved successfully.";
-            Animal = new();
-            await GetAnimals();
-            StateHasChanged();
+            var result = await AnimalRepository.AddAnimalAsync(Animal);
+            if (result)
+            {
+                savedAnimalMessage = "Animal has saved successfully.";
+                Animal = new();
+                await GetAnimals();
+                StateHasChanged();
+            }
         }
-        
     }
 
     bool isSolved;
@@ -270,8 +277,33 @@
     }
 
 
-    void SaveRation()
+    async Task SaveRation()
     {
+        if (Animal.Id != 0)
+        {
+            Ration.AnimalId = Animal.Id;
+            var createdRationResult = await RationRepository.AddRationAsync(Ration);
+            if (createdRationResult && result != null)
+            {
+                RationDetail.RationId = Ration.Id;
+                RationDetail.TotalCost = result.TotalCost;
+                var createdRationDetailResult = await RationDetailRepository.AddRationDetailAsync(RationDetail);
+
+                if (createdRationDetailResult)
+                {
+                    var feedItems = result.FeedMixes.Select(x => new RationFeedItem
+                    {
+                        FeedName = x.FeedName,
+                        UsagePercentage = x.UsagePercentage,
+                        UsageAmountKg = x.UsageAmountKg,
+                        RationDetailId = RationDetail.Id,
+                        PricePerKg = x.PricePerKg
+                    }).ToList();
+
+                    await RatioFeedItemRepository.AddRationFeedItemsAsync(feedItems);
+                }
+            }
+        }
     }
 
 }
