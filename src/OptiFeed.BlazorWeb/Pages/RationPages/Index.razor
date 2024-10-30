@@ -11,17 +11,14 @@
         <RadzenCard Variant="Variant.Outlined" class="rz-p-0" Style="width: 100%; overflow: hidden;">
             <RadzenRow Gap="0">
                 <RadzenColumn Size="12" SizeLG="3" class="rz-p-4 product-title">
-                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Animal name</RadzenText>
                     <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-on-secondary-lighter">@(ration.AnimalName)</RadzenText>
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeLG="7" class="rz-p-4">
                     <RadzenRow Gap="0">
                         <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
-                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Tag number</RadzenText>
                             <RadzenText TextStyle="TextStyle.Body2">@(ration.TagNumber)</RadzenText>
                         </RadzenColumn>
                         <RadzenColumn Size="12" SizeMD="6" SizeLG="3" class="rz-text-align-start rz-text-align-lg-end">
-                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Total cost</RadzenText>
                             <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", ration.TotalCost)}")/>
                         </RadzenColumn>
                     </RadzenRow>
@@ -66,13 +63,13 @@
 
         <MDivider></MDivider>
 
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
                         Data="@rationDetails.FeedItems" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
             <Columns>
-                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.FeedName)" Title="Feed Name" Frozen="true" Width="160px" />
-                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsagePercentage)" Title="Percentage(%)" Width="160px"/>
-                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsageAmountKg)" Title="Amount(kg)" Width="200px" />
-                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.PricePerKg)" Title="Price($/kg)" Width="120px" />
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.FeedName)" Title="Feed Name" Frozen="true" Width="160px" Filterable="false" />
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsagePercentage)" Title="Percentage(%)" Width="160px" Filterable="false"/>
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsageAmountKg)" Title="Amount(kg)" Width="200px" Filterable="false" />
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.PricePerKg)" Title="Price($/kg)" Width="120px" Filterable="false" />
             </Columns>
         </RadzenDataGrid>
     </MCard>

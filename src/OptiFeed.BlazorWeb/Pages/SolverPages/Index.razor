@@ -9,6 +9,7 @@
 @inject IRationRepository RationRepository
 @inject IRationDetailRepository RationDetailRepository
 @inject IRatioFeedItemRepository RatioFeedItemRepository
+@inject NavigationManager NavigationManager
 
 <MStepper Value="_step">
     <MStepperHeader>
@@ -355,6 +356,7 @@
                         }
 
                         savedRationMessage = "Ration has created successfully.";
+                        NavigationManager.NavigateTo("/rations");
                     }
                 }
             }
