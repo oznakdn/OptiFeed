@@ -106,4 +106,9 @@ public class RationRepository : IRationRepository
 
         return result;
     }
+
+    public async Task<int> GetRationCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        return await _dbContext.Rations.CountAsync(cancellationToken);
+    }
 }

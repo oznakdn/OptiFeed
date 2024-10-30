@@ -15,4 +15,5 @@ public interface IRationRepository
         CancellationToken cancellationToken = default(CancellationToken));
     Task<AnimalRationDetailsDto> GetRationDetailsAsync(int id,
         CancellationToken cancellationToken = default(CancellationToken));
+    Task<int>GetRationCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 }

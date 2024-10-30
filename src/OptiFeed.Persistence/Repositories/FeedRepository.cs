@@ -73,4 +73,9 @@ public class FeedRepository : IFeedRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> GetFeedCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        return await dbContext.Feeds.CountAsync(cancellationToken);
+    }
 }

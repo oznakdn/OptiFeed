@@ -1,4 +1,7 @@
 ﻿@page "/"
+@inject IAnimalRepository AnimalRepository
+@inject IFeedRepository FeedRepository
+@inject IRationRepository RationRepository
 
 <RadzenStack class="rz-p-2 rz-p-md-12" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
     <RadzenCardGroup Responsive="@responsive">
@@ -6,7 +9,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Gap="10rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H6">Animals</RadzenText>
-                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@($"{Math.Round(teamOneProgress)}")</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@animalCount</RadzenText>
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
@@ -14,7 +17,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Gap="10rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H6">Feeds</RadzenText>
-                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@($"{Math.Round(teamTwoProgress)}")</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@feedCount</RadzenText>
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
@@ -22,7 +25,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Gap="10rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H6">Rations</RadzenText>
-                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@($"{Math.Round(teamThreeProgress)}")</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-m-0">@rationCount</RadzenText>
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
@@ -37,7 +40,16 @@
 
     Variant variant = Variant.Filled;
 
-    double teamOneProgress = 55;
-    double teamTwoProgress = 32;
-    double teamThreeProgress = 76;
+    int animalCount;
+    int feedCount;
+    int rationCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        animalCount = await AnimalRepository.GetAnimalCountAsync();
+        feedCount = await FeedRepository.GetFeedCountAsync();
+        rationCount = await RationRepository.GetRationCountAsync();
+    }
+
 }

@@ -19,4 +19,5 @@ public interface IFeedRepository
         CancellationToken cancellationToken = default(CancellationToken));
 
     Task<IList<Feed>> GetFeedsAsync(CancellationToken cancellationToken = default(CancellationToken));
+    Task<int> GetFeedCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 }

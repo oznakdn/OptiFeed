@@ -40,6 +40,11 @@ public class AnimalRepository : IAnimalRepository
         .ToListAsync(cancellationToken);
     }
 
+    public async Task<int> GetAnimalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        return await dbContext.Animals.CountAsync(cancellationToken);
+    }
+
     public async Task<bool> UpdateAnimalAsync(Animal animal, CancellationToken cancellationToken = default)
     {
         dbContext.Animals.Update(animal);
