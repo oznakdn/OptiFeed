@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore.Diagnostics
+@using OptiFeed.Core.Dtos
 @inject IAnimalRepository AnimalRepository
 @inject IFeedRepository FeedRepository
 @inject IRationRepository RationRepository
@@ -35,6 +37,24 @@
 <MDivider></MDivider>
 
 
+<div class="rz-p-0 rz-p-md-12">
+    <MCardTitle Style="justify-content: center">Feed - Stock</MCardTitle>
+    <RadzenStack>
+        @if (feedAndStock != null)
+        {
+            <RadzenChart ColorScheme="ColorScheme.Monochrome">
+                <RadzenColumnSeries Title="Stock" Data="@feedAndStock" CategoryProperty="FeedName" ValueProperty="Stock"/>
+            </RadzenChart>
+        }
+        else
+        {
+            <p>Loading...</p>
+        }
+
+    </RadzenStack>
+</div>
+
+
 @code {
     bool responsive = true;
 
@@ -44,12 +64,14 @@
     int feedCount;
     int rationCount;
 
+    private List<FeedAndStockDto> feedAndStock;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         animalCount = await AnimalRepository.GetAnimalCountAsync();
         feedCount = await FeedRepository.GetFeedCountAsync();
         rationCount = await RationRepository.GetRationCountAsync();
+        feedAndStock = await FeedRepository.FeedAndStockChartAsync();
     }
-
 }

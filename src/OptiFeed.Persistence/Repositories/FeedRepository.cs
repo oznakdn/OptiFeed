@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using OptiFeed.Core.Dtos;
 using OptiFeed.Core.Models;
 using OptiFeed.Persistence.Context;
 
@@ -77,5 +78,23 @@ public class FeedRepository : IFeedRepository
     public async Task<int> GetFeedCountAsync(CancellationToken cancellationToken = default(CancellationToken))
     {
         return await dbContext.Feeds.CountAsync(cancellationToken);
+    }
+
+    public async Task<List<FeedAndStockDto>> FeedAndStockChartAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        var groupedFeeds = await dbContext.Feeds
+            .GroupBy(f => f.Name)
+            .Select(g=>new 
+            {
+                FeedName = g.Key,
+                Stock = g.Sum(x=>Math.Round(x.Stock,2))
+            }).ToListAsync(cancellationToken);
+
+        return groupedFeeds.Select(x=> new FeedAndStockDto
+        {
+            FeedName = x.FeedName,
+            Stock = x.Stock,
+        }).ToList();
+
     }
 }

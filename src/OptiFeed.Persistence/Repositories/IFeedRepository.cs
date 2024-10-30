@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using OptiFeed.Core.Dtos;
 using OptiFeed.Core.Models;
 
 namespace OptiFeed.Persistence.Repositories;
@@ -20,4 +21,5 @@ public interface IFeedRepository
 
     Task<IList<Feed>> GetFeedsAsync(CancellationToken cancellationToken = default(CancellationToken));
     Task<int> GetFeedCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+    Task<List<FeedAndStockDto>> FeedAndStockChartAsync(CancellationToken cancellationToken= default(CancellationToken));
 }

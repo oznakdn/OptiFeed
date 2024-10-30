@@ -6,21 +6,19 @@
     <MContainer>
         <MRow>
             <MNavigationDrawer Absolute ExpandOnHover Color="#9E9E9E">
-                <MList>
-                    <MListItem Link>
-                        <MListItemContent>
-                            <MListItemTitle Class="text-h6">
-                                OptiFeed
-                            </MListItemTitle>
-                        </MListItemContent>
-                    </MListItem>
-                </MList>
-                <MList Nav Dense>
-                    <MListItem Link Href="/" Style="padding: unset">
+               
+                <MList Nav>
+                    <MListItem Link Style="padding: revert">
                         <MListItemIcon>
                             <MIcon>mdi-cow</MIcon>
                         </MListItemIcon>
                         <MListItemTitle Style="font-size: larger">Animals</MListItemTitle>
+                    </MListItem>
+                    <MListItem Link Href="/animals" Style="padding: revert">
+                        <MListItemIcon>
+                            <MIcon>mdi-cow</MIcon>
+                        </MListItemIcon>
+                        <MListItemTitle Style="font-size: larger;">Animals</MListItemTitle>
                     </MListItem>
                     <MListItem Link Href="/feeds" Style="padding: unset">
                         <MListItemIcon>
@@ -50,9 +48,11 @@
     </MContainer>
 
     <!--TopBar-->
-    <MAppBar App Color="#BDBDBD">
+    <MAppBar App Color="#BDBDBD" Collapse="false">
         <MIcon Large Color="success">mdi-sprout-outline</MIcon>
-        <MAppBarTitle Style="font-size:32px;">OptiFeed</MAppBarTitle>
+        <MAppBarTitle Class="mdi-36px">
+            <a href="/" style="text-decoration: none;color: black;font-size:32px">OptiFeed</a>
+        </MAppBarTitle>
         <MSpacer></MSpacer>
         <MButton Icon>
             <MIcon>mdi-github</MIcon>
@@ -74,5 +74,7 @@
         </MCol>
     </MFooter>
 </MApp>
+
+
 
 
