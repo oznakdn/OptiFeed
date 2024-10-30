@@ -1,5 +1,125 @@
 ﻿@page "/rations"
+@using OptiFeed.Core.Dtos
+@inject IRationRepository RationRepository
+
+
+<RadzenDataList
+    AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:400px;overflow:auto;" : "")"
+    WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
+    Data="@animalRations" TItem="AnimalRationDto" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+    <Template Context="ration">
+        <RadzenCard Variant="Variant.Outlined" class="rz-p-0" Style="width: 100%; overflow: hidden;">
+            <RadzenRow Gap="0">
+                <RadzenColumn Size="12" SizeLG="3" class="rz-p-4 product-title">
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Animal name</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-on-secondary-lighter">@(ration.AnimalName)</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeLG="7" class="rz-p-4">
+                    <RadzenRow Gap="0">
+                        <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Tag number</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body2">@(ration.TagNumber)</RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="6" SizeLG="3" class="rz-text-align-start rz-text-align-lg-end">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-mb-0">Total cost</RadzenText>
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", ration.TotalCost)}")/>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeLG="2" class="rz-p-4">
+                    <MButton Color="primary"
+                             Dark
+                             Class="mb-2"
+                             OnClick="@(async () => await GetRationDetails(ration.RationId))"
+                             Style="width: 100%">
+                        Details
+                    </MButton>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenCard>
+    </Template>
+</RadzenDataList>
+
+<MDialog @bind-Value="_dialog"
+         MaxWidth="1200">
+    <MCard>
+        <MCardTitle>
+            <span class="text-h5">Ration Details</span>
+        </MCardTitle>
+        
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" class="rz-p-4">
+            <RadzenStack Gap="0">
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Animal name</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">
+                    <b>@(rationDetails.AnimalName)</b>
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Tag number</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">
+                    <b>@rationDetails.TagNumber</b>
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Total cost ($)</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">
+                    <b>@rationDetails.TotalCost</b>
+                </RadzenText>
+            </RadzenStack>
+        </RadzenStack>
+
+        <MDivider></MDivider>
+
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                        Data="@rationDetails.FeedItems" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.FeedName)" Title="Feed Name" Frozen="true" Width="160px" />
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsagePercentage)" Title="Percentage(%)" Width="160px"/>
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.UsageAmountKg)" Title="Amount(kg)" Width="200px" />
+                <RadzenDataGridColumn Property="@nameof(FeedItemsDto.PricePerKg)" Title="Price($/kg)" Width="120px" />
+            </Columns>
+        </RadzenDataGrid>
+    </MCard>
+    <MCardActions>
+        <MSpacer></MSpacer>
+        <MButton Color="blue darken-1"
+                 Text
+                 OnClick="Close">
+            Close
+        </MButton>
+
+    </MCardActions>
+</MDialog>
+
 
 @code {
     
+    bool allowVirtualization;
+    bool _dialog;
+    bool _loading;
+
+
+    IQueryable<AnimalRationDto> animalRations;
+    AnimalRationDetailsDto rationDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await GetRations();
+    }
+
+    async Task GetRations()
+    {
+        var rations = await RationRepository.GetRationsWithAnimalAsync();
+        animalRations = rations.AsQueryable();
+    }
+
+    async Task GetRationDetails(int id)
+    {
+        rationDetails = await RationRepository.GetRationDetailsAsync(id);
+        _dialog = true;
+    }
+
+    public void Close()
+    {
+        _dialog = false;
+    }
+
 }
