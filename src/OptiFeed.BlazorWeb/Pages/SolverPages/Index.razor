@@ -159,9 +159,9 @@
             </MCard>
             @if (!string.IsNullOrEmpty(savedRationMessage))
             {
-            <RadzenAlert AllowClose="true" AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Shade="Shade.Lighter">
-                @savedRationMessage
-            </RadzenAlert>
+                <RadzenAlert AllowClose="true" AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Shade="Shade.Lighter">
+                    @savedRationMessage
+                </RadzenAlert>
             }
             <MButton Color="error" OnClick="() => _step = 2">Back</MButton>
             <MButton Color="success" Disabled=@(!isSolved ? true : false) OnClick="SaveRation">Save</MButton>
@@ -171,18 +171,18 @@
 
 @code {
 
+    private int _step = 1;
+    
     private Animal Animal = new();
     private Ration Ration = new();
     private RationDetail RationDetail = new();
 
-    private FeedMixSummary result;
-    private int _step = 1;
 
     ObservableCollection<Feed> sourceFeeds;
     ObservableCollection<Feed> targetFeeds = new();
+    Feed draggedItem;
 
-    int value = 0;
-    IEnumerable<Animal> animals = new List<Animal>();
+
 
 
     protected override async Task OnInitializedAsync()
@@ -190,23 +190,41 @@
         await base.OnInitializedAsync();
 
         await GetAnimals();
+        await GetFeeds();
+    }
 
+    #region Getting Feeds
+
+    async Task GetFeeds()
+    {
         var feeds = await FeedRepository.GetFeedsAsync();
+        feeds = feeds.Where(x => x.Stock > 0).ToList();
         sourceFeeds = new ObservableCollection<Feed>(feeds);
     }
 
-    Feed draggedItem;
+    #endregion
 
-    async Task GetAnimal(int id)
-    {
-        Animal = await AnimalRepository.GetAnimalAsync(id);
-    }
+    #region Getting Animals
+
+    IEnumerable<Animal> animals = new List<Animal>();
 
     async Task GetAnimals()
     {
         var animalsData = await AnimalRepository.GetAnimalsAsync();
         animals = animalsData.OrderBy(x => x.Id).ToList();
     }
+
+    #endregion
+
+    #region Getting Animal By Id
+
+    async Task GetAnimal(int id)
+    {
+        Animal = await AnimalRepository.GetAnimalAsync(id);
+    }
+
+    #endregion
+
 
     void RowRender(RowRenderEventArgs<Feed> args)
     {
@@ -242,6 +260,10 @@
         };
     }
 
+    #region Selection Animal
+
+    int value = 0;
+
     async Task SelectAnimal(int id)
     {
         if (value > 0)
@@ -254,7 +276,12 @@
         }
     }
 
+    #endregion
+
+    #region Saving Animal
+
     string savedAnimalMessage = string.Empty;
+
     private async Task SaveAnimal()
     {
         if (value == 0)
@@ -270,6 +297,12 @@
         }
     }
 
+    #endregion
+
+    #region Solving Ration
+
+    private FeedMixSummary result;
+
     bool isSolved;
 
     void Calculate()
@@ -282,8 +315,12 @@
         _step = 3;
     }
 
+    #endregion
+
+    #region Saving Ration
 
     string savedRationMessage = string.Empty;
+
     async Task SaveRation()
     {
         if (Animal.Id != 0)
@@ -310,11 +347,21 @@
                     var createdFeedItemsResult = await RatioFeedItemRepository.AddRationFeedItemsAsync(feedItems);
                     if (createdFeedItemsResult)
                     {
+                        foreach (var feed in result.FeedMixes)
+                        {
+                            var updatedFeed = await FeedRepository.GetFeedByFilterAsync(x => x.Name == feed.FeedName);
+                            updatedFeed.Stock -= feed.UsageAmountKg;
+                            await FeedRepository.UpdateFeedAsync(updatedFeed);
+                        }
+
                         savedRationMessage = "Ration has created successfully.";
                     }
                 }
             }
         }
     }
+
+    #endregion
+
 
 }

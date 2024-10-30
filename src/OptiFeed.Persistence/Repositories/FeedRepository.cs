@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using OptiFeed.Core.Models;
 using OptiFeed.Persistence.Context;
@@ -44,6 +45,14 @@ public class FeedRepository : IFeedRepository
         .Where(x=>x.Id == id)
         .AsNoTracking()
         .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Feed> GetFeedByFilterAsync(Expression<Func<Feed, bool>> filter, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        return await dbContext.Feeds
+            .Where(filter)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IList<Feed>> GetFeedsAsync(CancellationToken cancellationToken = default)

@@ -99,6 +99,12 @@
                                         <MTextField @bind-Value="feed.MaxUsage"
                                                     Label="MaxUsage (%)"></MTextField>
                                     </MCol>
+                                    <MCol Cols="12"
+                                          Sm="6"
+                                          Md="4">
+                                        <MTextField @bind-Value="feed.Stock"
+                                                    Label="Stock (kg)"></MTextField>
+                                    </MCol>
 
                                 </MRow>
                             </MContainer>
@@ -167,6 +173,7 @@
           new (){ Text= "Cost ($/kg)", Value= nameof(Feed.CostPerKg),Sortable = true},
           new (){ Text= "Min Usage (%)", Value= nameof(Feed.MinUsage),Sortable = true},
           new (){ Text= "Max Usage (%)", Value= nameof(Feed.MaxUsage),Sortable = true},
+          new (){ Text= "Stock (kg)", Value= nameof(Feed.Stock),Sortable = true},
           new (){ Text= "Actions", Value= "actions",Sortable=false }
     };
 
@@ -270,7 +277,8 @@
                     NDFContent = row.Cell(6).GetValue<Double>(),
                     MinUsage = row.Cell(7).GetValue<Double>(),
                     MaxUsage = row.Cell(8).GetValue<Double>(),
-                    CostPerKg = row.Cell(9).GetValue<Double>()
+                    CostPerKg = row.Cell(9).GetValue<Double>(),
+                    Stock = row.Cell(10).GetValue<Double>()
                 };
 
                 await FeedRepository.AddFeedAsync(feed);

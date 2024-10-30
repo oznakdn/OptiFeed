@@ -13,6 +13,6 @@ public class Feed
     public double MaxUsage { get; set; }       // Max kg that can be used in the ration
     public double MinUsage { get; set; }       // Min kg that can be used in the ration
 
-    public FeedStock? FeedStock { get; set; }
+    public double Stock { get; set; }
 
 }
