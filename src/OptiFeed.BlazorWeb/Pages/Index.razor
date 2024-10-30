@@ -48,11 +48,14 @@
         }
         else
         {
-            <p>Loading...</p>
+            <div class="rz-m-12">
+                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            </div>
         }
 
     </RadzenStack>
 </div>
+
 
 
 @code {
@@ -72,6 +75,11 @@
         animalCount = await AnimalRepository.GetAnimalCountAsync();
         feedCount = await FeedRepository.GetFeedCountAsync();
         rationCount = await RationRepository.GetRationCountAsync();
+        await FeedAndStockChart();
+    }
+
+    async Task FeedAndStockChart()
+    {
         feedAndStock = await FeedRepository.FeedAndStockChartAsync();
     }
 }
