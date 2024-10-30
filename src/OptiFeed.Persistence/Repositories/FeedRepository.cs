@@ -33,6 +33,17 @@ public class FeedRepository : IFeedRepository
         return await dbContext.SaveChangesAsync(cancellationToken) > 0;
     }
 
+    public async Task<bool> UpdateExecuteFeedAsync(int id, double amount,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        var result = await dbContext.Feeds
+            .Where(b => b.Id == id)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(b => b.Stock, amount),cancellationToken);
+        
+        return result > 0;
+    }
+
     public async Task<bool> DeleteFeedAsync(Feed feed, CancellationToken cancellationToken = default)
     {
         dbContext.Feeds.Remove(feed);
@@ -42,12 +53,13 @@ public class FeedRepository : IFeedRepository
     public async Task<Feed> GetFeedAsync(int id, CancellationToken cancellationToken = default)
     {
         return await dbContext.Feeds
-        .Where(x=>x.Id == id)
-        .AsNoTracking()
-        .SingleOrDefaultAsync(cancellationToken);
+            .Where(x => x.Id == id)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<Feed> GetFeedByFilterAsync(Expression<Func<Feed, bool>> filter, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Feed> GetFeedByFilterAsync(Expression<Func<Feed, bool>> filter,
+        CancellationToken cancellationToken = default(CancellationToken))
     {
         return await dbContext.Feeds
             .Where(filter)
@@ -58,9 +70,7 @@ public class FeedRepository : IFeedRepository
     public async Task<IList<Feed>> GetFeedsAsync(CancellationToken cancellationToken = default)
     {
         return await dbContext.Feeds
-        .AsNoTracking()
-        .ToListAsync(cancellationToken);
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
-
-
 }

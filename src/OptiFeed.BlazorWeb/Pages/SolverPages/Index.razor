@@ -352,7 +352,7 @@
                         {
                             var updatedFeed = await FeedRepository.GetFeedByFilterAsync(x => x.Name == feed.FeedName);
                             updatedFeed.Stock -= feed.UsageAmountKg;
-                            await FeedRepository.UpdateFeedAsync(updatedFeed);
+                            await FeedRepository.UpdateExecuteFeedAsync(updatedFeed.Id,updatedFeed.Stock);
                         }
 
                         savedRationMessage = "Ration has created successfully.";

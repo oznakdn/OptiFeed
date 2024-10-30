@@ -7,9 +7,12 @@ public interface IRationRepository
 {
     Task<bool> AddRationAsync(Ration ration, CancellationToken cancellationToken = default(CancellationToken));
     Task<bool> UpdateRationAsync(Ration ration, CancellationToken cancellationToken = default(CancellationToken));
+    Task<bool> UpdateRationsAsync(List<Ration> rations, CancellationToken cancellationToken = default(CancellationToken));
     Task<bool> DeleteRationAsync(Ration ration, CancellationToken cancellationToken = default(CancellationToken));
     Task<Ration> GetRationAsync(int id, CancellationToken cancellationToken = default(CancellationToken));
     Task<IList<Ration>> GetRationsAsync(CancellationToken cancellationToken = default(CancellationToken));
-    Task<List<AnimalRationDto>>GetRationsWithAnimalAsync(CancellationToken cancellationToken = default(CancellationToken));
-    Task<AnimalRationDetailsDto>GetRationDetailsAsync(int id, CancellationToken cancellationToken = default(CancellationToken));
+    Task<List<AnimalRationDto>> GetRationsWithAnimalAsync(
+        CancellationToken cancellationToken = default(CancellationToken));
+    Task<AnimalRationDetailsDto> GetRationDetailsAsync(int id,
+        CancellationToken cancellationToken = default(CancellationToken));
 }

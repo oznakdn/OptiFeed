@@ -27,6 +27,15 @@ public class RationRepository : IRationRepository
         _dbContext.Rations.Update(ration);
         return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
     }
+    
+
+    public async Task<bool> UpdateRationsAsync(List<Ration> rations,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        _dbContext.Rations.UpdateRange(rations);
+        return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+    }
+    
 
     public async Task<bool> DeleteRationAsync(Ration ration,
         CancellationToken cancellationToken = default(CancellationToken))
