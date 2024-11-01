@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using Microsoft.EntityFrameworkCore.Diagnostics
+@using System.Globalization
 @using OptiFeed.Core.Dtos
 @inject IAnimalRepository AnimalRepository
 @inject IFeedRepository FeedRepository
@@ -56,6 +56,34 @@
     </RadzenStack>
 </div>
 
+<MDivider></MDivider>
+
+<div class="rz-p-0 rz-p-md-12">
+    <MCardTitle Style="justify-content: center">Feed - Price</MCardTitle>
+    <RadzenStack class="rz-p-0 rz-p-md-6 rz-p-lg-12">
+        @if (feedAndPrice != null)
+        {
+            <RadzenChart>
+                <RadzenLineSeries Smooth="true" Data="@feedAndPrice" CategoryProperty="FeedName" Title="Price" ValueProperty="Price" RenderingOrder="1">
+                    <RadzenMarkers MarkerType="MarkerType.Circle"/>
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20"/>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true"/>
+                    <RadzenAxisTitle Text="USD"/>
+                </RadzenValueAxis>
+            </RadzenChart>
+        }
+        else
+        {
+            <div class="rz-m-12">
+                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            </div>
+        }
+        
+    </RadzenStack>
+</div>
+
 
 
 @code {
@@ -68,6 +96,7 @@
     int rationCount;
 
     private List<FeedAndStockDto> feedAndStock;
+    private List<FeedAndPriceDto> feedAndPrice;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,10 +105,21 @@
         feedCount = await FeedRepository.GetFeedCountAsync();
         rationCount = await RationRepository.GetRationCountAsync();
         await FeedAndStockChart();
+        await FeedAndPriceChart();
     }
 
     async Task FeedAndStockChart()
     {
         feedAndStock = await FeedRepository.FeedAndStockChartAsync();
+    }
+
+    async Task FeedAndPriceChart()
+    {
+        feedAndPrice = await FeedRepository.FeedAndPriceChartAsync();
+    }
+    
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
     }
 }

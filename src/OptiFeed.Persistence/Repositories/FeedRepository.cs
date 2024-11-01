@@ -97,4 +97,20 @@ public class FeedRepository : IFeedRepository
         }).ToList();
 
     }
+
+    public async Task<List<FeedAndPriceDto>> FeedAndPriceChartAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        var gropedFeed = await dbContext.Feeds
+            .GroupBy(x => x.Name)
+            .Select(x => new
+            {
+                FeedName = x.Key,
+                Price = x.Sum(x=>x.CostPerKg)
+            }).ToListAsync(cancellationToken);
+        return gropedFeed.Select(x => new FeedAndPriceDto
+        {
+            FeedName = x.FeedName,
+            Price = x.Price
+        }).ToList();
+    }
 }

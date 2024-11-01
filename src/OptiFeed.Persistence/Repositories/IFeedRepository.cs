@@ -22,4 +22,5 @@ public interface IFeedRepository
     Task<IList<Feed>> GetFeedsAsync(CancellationToken cancellationToken = default(CancellationToken));
     Task<int> GetFeedCountAsync(CancellationToken cancellationToken = default(CancellationToken));
     Task<List<FeedAndStockDto>> FeedAndStockChartAsync(CancellationToken cancellationToken= default(CancellationToken));
+    Task<List<FeedAndPriceDto>>FeedAndPriceChartAsync(CancellationToken cancellationToken = default(CancellationToken));
 }
